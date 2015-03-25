@@ -1,89 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
-  <groupId>peerFile</groupId>
-  <artifactId>Unicorn</artifactId>
-  <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Unicorn Maven Webapp</name>
-  <url>http://maven.apache.org</url>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.2.2.RELEASE</version>
-    </parent>
-
-    <properties>
-        <!-- use UTF-8 for everything -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>spring-ws-core</artifactId>
-		</dependency>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>peerFile</groupId>
+	<artifactId>Unicorn</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Unicorn Maven Webapp</name>
+	<url>http://maven.apache.org</url>
 	
-    </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.2.RELEASE</version>
+	</parent>
+	<properties>
+		<!-- use UTF-8 for everything -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+	<dependencies>
+		
+	<dependency>
+	<groupId>jstl</groupId>
+	<artifactId>jstl</artifactId>
+	<version>1.2</version>
+</dependency>
+	
+
+
+	<dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-api</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-impl</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-java2wsdl</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.neethi</groupId>
+			<artifactId>neethi</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-cypher-compiler-2.1</artifactId>
+			<version>2.1.5</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.build.directory}/generated-sources/axis2/wsdl2code/resources</directory>
+				<includes>
+					<include>**/**</include>
+				</includes>
+			</resource>
+		</resources>
+		
+			<plugins>
+				<!-- tag::wsdl[] -->
+
+				<plugin>
+					<groupId>org.apache.axis2</groupId>
+					<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+					<version>1.6.2</version>
+					<configuration>
+						<packageName>peerFile.wsdl</packageName>
+						<wsdlFile>http://peerfile.eu:4000/soap/wsdl</wsdlFile>
+						<databindingName>xmlbeans</databindingName>
+						<outputDirectory>src/main/wsdl</outputDirectory>
+
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>wsdl2code</goal>
+							</goals>
+
+						</execution>
+					</executions>
+				</plugin>	
+				<!-- end::wsdl[] -->
+				
+				<plugin>
+                	<groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- tag::wsdl[] -->
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.8.1</version>
-                   <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions> 
-                
-           
-                <configuration>
-                
-                    <schemaLanguage>WSDL</schemaLanguage>
-                     <generateDirectory>${project.build.sourceDirectory}
-                      </generateDirectory>
-                    <generatePackage>peerFile.wsdl</generatePackage>
-                    <forceRegenerate>true</forceRegenerate>
-                    <schemas>
-                        <schema>
-                             <url>http://peerfile.eu:4000/soap/wsdl</url>  
-                        
-                        </schema>
-                    </schemas>
-                </configuration>
-            </plugin>
-            <!-- end::wsdl[] -->
-        </plugins>
-    </build>
+            	</plugin>
+			</plugins>
+		
 
-    <repositories>
-        <repository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-    </pluginRepositories>
+	</build>
 
+
+
+	<repositories>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<url>https://repo.spring.io/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
