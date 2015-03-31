@@ -7,9 +7,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Unicorn Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	
 
-	
+
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -21,19 +21,19 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
-		
-	<dependency>
-	<groupId>jstl</groupId>
-	<artifactId>jstl</artifactId>
-	<version>1.2</version>
-</dependency>
-	
+
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
 
 
-	<dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
 
 		<dependency>
@@ -79,49 +79,47 @@
 			<artifactId>neo4j-cypher-compiler-2.1</artifactId>
 			<version>2.1.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>${project.build.directory}/generated-sources/axis2/wsdl2code/resources</directory>
-				<includes>
-					<include>**/**</include>
-				</includes>
-			</resource>
-		</resources>
-		
-			<plugins>
-				<!-- tag::wsdl[] -->
 
-				<plugin>
-					<groupId>org.apache.axis2</groupId>
-					<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
-					<version>1.6.2</version>
-					<configuration>
-						<packageName>peerFile.wsdl</packageName>
-						<wsdlFile>http://peerfile.eu:4000/soap/wsdl</wsdlFile>
-						<databindingName>xmlbeans</databindingName>
-						<outputDirectory>src/main/wsdl</outputDirectory>
 
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>wsdl2code</goal>
-							</goals>
+		<plugins>
+			<!-- tag::wsdl[] -->
 
-						</execution>
-					</executions>
-				</plugin>	
-				<!-- end::wsdl[] -->
+			<plugin>
+				<groupId>org.apache.axis2</groupId>
+				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+				<unpackClasses>false</unpackClasses>
+					<packageName>peerFile.wsdl</packageName>
+					<wsdlFile>http://peerfile.eu:4000/soap/wsdl</wsdlFile>
+					<databindingName>adb</databindingName>
+					<outputDirectory>src/main/wsdl</outputDirectory>
 				
-				<plugin>
-                	<groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            	</plugin>
-			</plugins>
-		
+				</configuration>
+				<executions>
+				
+					<execution>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+
+					</execution>
+				</executions>
+			</plugin>
+			<!-- end::wsdl[] -->
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 
 	</build>
 
@@ -141,3 +139,4 @@
 		</pluginRepository>
 	</pluginRepositories>
 </project>
+

@@ -3,7 +3,7 @@
  * ServiceCallbackHandler.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
+ * by the Apache Axis2 version: 1.6.0  Built on : May 17, 2011 (04:19:43 IST)
  */
 
     package peerFile.wsdl;
@@ -106,6 +106,22 @@
            * override this method for handling error response from get_entity_attributes operation
            */
             public void receiveErrorget_entity_attributes(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for back_to_historic_version method
+            * override this method for handling normal response from back_to_historic_version operation
+            */
+           public void receiveResultback_to_historic_version(
+                    peerFile.wsdl.ServiceStub.Back_to_historic_versionResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from back_to_historic_version operation
+           */
+            public void receiveErrorback_to_historic_version(java.lang.Exception e) {
             }
                 
            /**
@@ -250,6 +266,22 @@
            * override this method for handling error response from get_configuration operation
            */
             public void receiveErrorget_configuration(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for get_entity_links_info method
+            * override this method for handling normal response from get_entity_links_info operation
+            */
+           public void receiveResultget_entity_links_info(
+                    peerFile.wsdl.ServiceStub.Get_entity_links_infoResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from get_entity_links_info operation
+           */
+            public void receiveErrorget_entity_links_info(java.lang.Exception e) {
             }
                 
            /**
@@ -410,6 +442,22 @@
            * override this method for handling error response from echo operation
            */
             public void receiveErrorecho(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for get_entity_name method
+            * override this method for handling normal response from get_entity_name operation
+            */
+           public void receiveResultget_entity_name(
+                    peerFile.wsdl.ServiceStub.Get_entity_nameResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from get_entity_name operation
+           */
+            public void receiveErrorget_entity_name(java.lang.Exception e) {
             }
                 
            /**
