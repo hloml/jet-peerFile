@@ -38,18 +38,20 @@ public class ServiceClient {
 	
 	
 	public String getLogin(String userName, String password) {
-		String code = null;
+		String code = "";
 		
 		Login login = new Login();
-		login.setUser_name("test");
-		login.setPassword("tsetUNI");
-		
+		/*login.setUser_name("test");
+		login.setPassword("tsetUNI");*/
+		login.setUser_name(userName);
+		login.setPassword(password);
 		
 		try {
 			LoginResponse response = service.login(login);
 			code = response.getSession_code();
 			System.out.println(response.getSession_code());
 			System.out.println(response.getSuccess());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
