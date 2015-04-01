@@ -15,6 +15,8 @@ import peerFile.wsdl.ServiceStub.Get_home_folder;
 import peerFile.wsdl.ServiceStub.Get_home_folderResponse;
 import peerFile.wsdl.ServiceStub.Login;
 import peerFile.wsdl.ServiceStub.LoginResponse;
+import peerFile.wsdl.ServiceStub.Logout;
+import peerFile.wsdl.ServiceStub.LogoutResponse;
 import peerFile.wsdl.ServiceStub.Get_full_path_from_root;
 import peerFile.wsdl.ServiceStub.Get_content;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;;
@@ -36,6 +38,19 @@ public class ServiceClient {
 		}
 	}
 	
+	public String logout(String code){
+		String success = "";
+		Logout logout = new Logout();
+		logout.setSession_code(code);
+		try {
+			LogoutResponse response = service.logout(logout);
+			System.out.println(response.getSuccess());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return success;
+	}
 	
 	public String getLogin(String userName, String password) {
 		String code = "";

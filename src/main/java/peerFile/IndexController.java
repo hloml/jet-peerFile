@@ -24,6 +24,12 @@ public class IndexController {
 	        return "index.jsp";
 	}
 	
+	@RequestMapping("/logout")
+	public String logout(HttpSession session, Model model) {
+			client.logout(session.getAttribute("code").toString());
+	        return "index.jsp";
+	}
+	
     @RequestMapping("/login")
     String index(@RequestParam(value="username", required=false) String username,@RequestParam(value="password", required=false) String password,HttpSession session, Model model) {
     	sessionCode = client.getLogin(username, password);		//pro ziskani session code    	 	

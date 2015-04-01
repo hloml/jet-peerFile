@@ -10,6 +10,7 @@
 <title>title</title>
 </head>
 <body>
+	<a href="logout">Logout</a>
 	Actual path:
 	<c:forEach var="temp" items="${path}">
 		<a href="browse?fileCode=${temp.getFileCode()}"><c:out value="${temp.getFileName()}"></c:out></a>
