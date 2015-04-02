@@ -17,7 +17,6 @@ import peerFile.wsdl.ServiceStub.Entity;
 public class IndexController {
 
 	private ServiceClient client = new ServiceClient();
-	String sessionCode = "3KSDY5";
 	
 	@RequestMapping("/")
 	public String home(Model model) {
@@ -32,7 +31,7 @@ public class IndexController {
 	
     @RequestMapping("/login")
     String index(@RequestParam(value="username", required=false) String username,@RequestParam(value="password", required=false) String password,HttpSession session, Model model) {
-    	sessionCode = client.getLogin(username, password);		//pro ziskani session code    	 	
+    	String sessionCode = client.getLogin(username, password);		//pro ziskani session code    	 	
     	if(sessionCode.equals(null)|| sessionCode.equals("")){
     		return "index.jsp";
     	}
