@@ -99,9 +99,10 @@
 					<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
 					<version>1.6.2</version>
 					<configuration>
+					<unpackClasses>false</unpackClasses>
 						<packageName>peerFile.wsdl</packageName>
 						<wsdlFile>http://peerfile.eu:4000/soap/wsdl</wsdlFile>
-						<databindingName>xmlbeans</databindingName>
+						<databindingName>adb</databindingName>
 						<outputDirectory>src/main/wsdl</outputDirectory>
 
 					</configuration>
