@@ -85,7 +85,6 @@ public class ServiceClient {
 	
 		Entities ent = res.getEntities();
 		entity = ent.getEntity();
-		
 		} catch (RemoteException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

@@ -32,8 +32,10 @@
 		<c:out value="${temp.getSize()}"/>
 		<c:out value="${temp.getCreate_time()}"/>
 		<c:out value="${temp.getUpdate_time()}"/>
-		<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}">Download</a>
 		
+		<c:if test="${!temp.getIsfolder()}">
+		<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}">Stáhnout</a>
+		</c:if>
 		<br>
 	</c:forEach>
 

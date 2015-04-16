@@ -2,14 +2,8 @@ package peerFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-
-
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
@@ -71,20 +65,14 @@ public class IndexController {
     @RequestMapping("/download")
     public void download(@RequestParam(value="fileCode", required=true) String fileCode, @RequestParam(value="name", required=true) String fileName, HttpSession session, Model model,  HttpServletResponse response) {
        
-    	System.out.println("code " + fileCode);
     	Get_contentResponse file = client.getContent(session.getAttribute("code").toString(), fileCode);
-    	
-    	System.out.println("soubor url" + file.getContent_url());
-    	System.out.println("soubor content" + file.getContent());
-    	
+ 	
     	if (file.getContent_url().isEmpty()) {    		
     		 try {
-    		byte[] downloadedFile	= Base64.decodeBase64(file.getContent().getBytes());
-    		 response.getOutputStream().write(downloadedFile);
-        	        	      
-    	      response.setContentType("application/force-download");
-    	      response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-    	 
+    	       byte[] downloadedFile = Base64.decodeBase64(file.getContent().getBytes());
+    		   response.getOutputStream().write(downloadedFile);     	        	      
+    	       response.setContentType("application/force-download");
+    	       response.setHeader("Content-Disposition", "attachment; filename=" + fileName); 	 
     	      
     	    } catch (Exception ex) {
     	    	ex.printStackTrace();
@@ -96,12 +84,9 @@ public class IndexController {
     		try {
 				response.sendRedirect(URL_PEERFILE + file.getContent_url());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    	}
-    	
-    	
+    	}	
     }
     
       
