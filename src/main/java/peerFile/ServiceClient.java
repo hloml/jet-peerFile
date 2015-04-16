@@ -138,16 +138,18 @@ public class ServiceClient {
 		 return pathItems;
 	}
 	
-	public void getContent(String sessionCode, String fileCode) {
+	public Get_contentResponse  getContent(String sessionCode, String fileCode) {
 		Get_content content = new Get_content();
 		content.setSession_code(sessionCode);
 		content.setCode(fileCode);
+		Get_contentResponse response = null;
 		try {
-			Get_contentResponse response = service.get_content(content);
+			 response = service.get_content(content);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return response;
 	}
 	
 	

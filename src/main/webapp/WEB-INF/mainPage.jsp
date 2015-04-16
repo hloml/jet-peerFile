@@ -32,6 +32,8 @@
 		<c:out value="${temp.getSize()}"/>
 		<c:out value="${temp.getCreate_time()}"/>
 		<c:out value="${temp.getUpdate_time()}"/>
+		<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}">Download</a>
+		
 		<br>
 	</c:forEach>
 

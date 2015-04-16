@@ -1,9 +1,16 @@
 package peerFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+
+
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
+
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.stereotype.*;
@@ -11,12 +18,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import peerFile.wsdl.ServiceStub.Entity;
+import peerFile.wsdl.ServiceStub.Get_contentResponse;
 
 @Controller
 @EnableAutoConfiguration
 public class IndexController {
 
 	private ServiceClient client = new ServiceClient();
+	private final String URL_PEERFILE = "http://peerfile.eu:4000";
+	
 	
 	@RequestMapping("/")
 	public String home(Model model) {
@@ -58,11 +68,46 @@ public class IndexController {
     }
     
     
+    @RequestMapping("/download")
+    public void download(@RequestParam(value="fileCode", required=true) String fileCode, @RequestParam(value="name", required=true) String fileName, HttpSession session, Model model,  HttpServletResponse response) {
+       
+    	System.out.println("code " + fileCode);
+    	Get_contentResponse file = client.getContent(session.getAttribute("code").toString(), fileCode);
+    	
+    	System.out.println("soubor url" + file.getContent_url());
+    	System.out.println("soubor content" + file.getContent());
+    	
+    	if (file.getContent_url().isEmpty()) {    		
+    		 try {
+    		byte[] downloadedFile	= Base64.decodeBase64(file.getContent().getBytes());
+    		 response.getOutputStream().write(downloadedFile);
+        	        	      
+    	      response.setContentType("application/force-download");
+    	      response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    	 
+    	      
+    	    } catch (Exception ex) {
+    	    	ex.printStackTrace();
+    	      throw new RuntimeException("IOError writing file to output stream");
+    	    }
+  
+    	}
+    	else {
+    		try {
+				response.sendRedirect(URL_PEERFILE + file.getContent_url());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    	
+    }
     
+      
     
     public static void main(String[] args) throws Exception {
     	
         SpringApplication.run(IndexController.class, args);
-        
     }
 }
