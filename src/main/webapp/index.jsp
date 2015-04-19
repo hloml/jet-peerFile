@@ -23,7 +23,7 @@
     <link href="res/signin.css" rel="stylesheet">
     <!-- jQuery -->
 <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.js"></script>
-    <title>title
+    <title>peerfile - login
     </title>
   </head>
   <body style="padding-top: 60px;">

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -98,23 +100,24 @@ public class IndexController {
     
     
     @RequestMapping("/download")
-    public void download(@RequestParam(value="fileCode", required=false) String fileCode, @RequestParam(value="name", required=false) String fileName, HttpSession session, Model model, HttpServletResponse response) {
-       
+    public void download(@RequestParam(value="fileCode", required=false) String fileCode, @RequestParam(value="name", required=false) String fileName, HttpSession session, Model model, HttpServletRequest request, HttpServletResponse response) {
+    	RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+         
     	Get_contentResponse file;
 		try {
 			if(session.getAttribute("code") == null){
-				model.addAttribute("errorMessage", "Access denied. Please log in.");
-				response.sendRedirect("index.jsp");
+				request.setAttribute("errorMessage", "Access denied. Please log in.");
+				rd.forward(request, response);
 				return;
    			}
 			if(fileCode == null){
-				model.addAttribute("errorMessage", "Missing file code.");
-				response.sendRedirect("index.jsp");
+				request.setAttribute("errorMessage", "Missing file code.");
+				rd.forward(request, response);
 				return;
 			}
 			if(fileName == null){
-				model.addAttribute("errorMessage", "Missing file name.");
-				response.sendRedirect("index.jsp");
+				request.setAttribute("errorMessage", "Missing file name.");
+				rd.forward(request, response);
 				return;
 			}
 		
@@ -133,6 +136,8 @@ public class IndexController {
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ServletException e) {
 			e.printStackTrace();
 		}
     }
