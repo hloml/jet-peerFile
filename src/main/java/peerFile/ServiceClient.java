@@ -45,6 +45,7 @@ public class ServiceClient {
 		logout.setSession_code(code);
 		LogoutResponse response = service.logout(logout);
 		System.out.println(response.getSuccess());
+		
 		return success;
 	}
 	
@@ -59,6 +60,7 @@ public class ServiceClient {
 		code = response.getSession_code();
 		System.out.println(response.getSession_code());
 		System.out.println(response.getSuccess());
+		
 		return code;
 	}
 	
@@ -73,6 +75,7 @@ public class ServiceClient {
 	
 		Entities ent = res.getEntities();
 		entity = ent.getEntity();
+		
 		return entity;
 	}
 	
