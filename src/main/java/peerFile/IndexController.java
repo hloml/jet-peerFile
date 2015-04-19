@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -33,11 +34,15 @@ public class IndexController {
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 			try {
+				if(session.getAttribute("code") == null){
+					model.addAttribute("errorMessage", "Access denied. Please log in.");
+					return "index.jsp";
+	   			}
 				client.logout(session.getAttribute("code").toString());
 			} catch (RemoteException e) {
 				model.addAttribute("errorMessage", "Remote service can not be reached.");
 				e.printStackTrace();
-				return "WEB-INF/mainPage.jsp";
+				return "index.jsp";
 			}
 	        return "index.jsp";
 	}
@@ -50,7 +55,7 @@ public class IndexController {
 			sessionCode = client.getLogin(username, password);	
 			if(sessionCode.equals(null)|| sessionCode.equals("")){
 				model.addAttribute("errorMessage", "Username or password is wrong, please try it again.");
-    			return "WEB-INF/mainPage.jsp";
+    			return "index.jsp";
     		}
     	
     		session.setAttribute("code", sessionCode);
@@ -64,7 +69,7 @@ public class IndexController {
 		} catch (RemoteException e) {
 			model.addAttribute("errorMessage", "Remote service can not be reached.");
 			e.printStackTrace();
-			return "WEB-INF/mainPage.jsp";
+			return "index.jsp";
 		}
         return "WEB-INF/mainPage.jsp";
     }
@@ -75,24 +80,44 @@ public class IndexController {
        
        Entity[] files;
        try {
-		files = client.browse(session.getAttribute("code").toString() , fileCode);
-		ArrayList<PathItem>  path = client.getFullPath(session.getAttribute("code").toString() , fileCode);
-       	model.addAttribute("files", files);
-       	model.addAttribute("path", path);
-		} catch (RemoteException e) {
-			model.addAttribute("errorMessage", "Remote service can not be reached.");
-			e.printStackTrace();
-			return "WEB-INF/mainPage.jsp";
-		}
-       return "WEB-INF/mainPage.jsp";
+    	   if(session.getAttribute("code") == null){
+				model.addAttribute("errorMessage", "Access denied. Please log in.");
+				return "index.jsp";
+   			}
+			files = client.browse(session.getAttribute("code").toString() , fileCode);
+			ArrayList<PathItem>  path = client.getFullPath(session.getAttribute("code").toString() , fileCode);
+	       	model.addAttribute("files", files);
+	       	model.addAttribute("path", path);
+			} catch (RemoteException e) {
+				model.addAttribute("errorMessage", "Remote service can not be reached.");
+				e.printStackTrace();
+				return "WEB-INF/mainPage.jsp";
+			}
+       		return "WEB-INF/mainPage.jsp";
     }
     
     
     @RequestMapping("/download")
-    public void download(@RequestParam(value="fileCode", required=true) String fileCode, @RequestParam(value="name", required=true) String fileName, HttpSession session, Model model,  HttpServletResponse response) {
+    public void download(@RequestParam(value="fileCode", required=false) String fileCode, @RequestParam(value="name", required=false) String fileName, HttpSession session, Model model, HttpServletResponse response) {
        
     	Get_contentResponse file;
 		try {
+			if(session.getAttribute("code") == null){
+				model.addAttribute("errorMessage", "Access denied. Please log in.");
+				response.sendRedirect("index.jsp");
+				return;
+   			}
+			if(fileCode == null){
+				model.addAttribute("errorMessage", "Missing file code.");
+				response.sendRedirect("index.jsp");
+				return;
+			}
+			if(fileName == null){
+				model.addAttribute("errorMessage", "Missing file name.");
+				response.sendRedirect("index.jsp");
+				return;
+			}
+		
 			file = client.getContent(session.getAttribute("code").toString(), fileCode);
 		 	
 	    	if (file.getContent_url().isEmpty()) {    		
@@ -109,7 +134,7 @@ public class IndexController {
 			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}   
+		}
     }
     
       
