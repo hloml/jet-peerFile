@@ -25,17 +25,11 @@
 <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.js"></script>
     <!-- DataTables -->
 <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.dataTables.min.js"></script>
-
- 
-<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/plug-ins/1.10.6/sorting/file-size.js"></script>
-
     <!-- Initialization -->
 <script type="text/javascript" class="init">
 $(document).ready(function() {
-	$('#files').DataTable( {
-			 columnDefs: [       { type: 'file-size', targets: 1 }     ]		
-
-} ) });
+	$('#files').DataTable();
+} );
 	</script>
     <title>title
     </title>
