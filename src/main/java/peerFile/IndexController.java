@@ -35,8 +35,9 @@ public class IndexController {
 			try {
 				client.logout(session.getAttribute("code").toString());
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
+				model.addAttribute("errorMessage", "Remote service can not be reached.");
 				e.printStackTrace();
+				return "WEB-INF/mainPage.jsp";
 			}
 	        return "index.jsp";
 	}
@@ -48,7 +49,8 @@ public class IndexController {
     	try {
 			sessionCode = client.getLogin(username, password);	
 			if(sessionCode.equals(null)|| sessionCode.equals("")){
-    			return "WEB-INF/error_login.jsp";
+				model.addAttribute("errorMessage", "Username or password is wrong, please try it again.");
+    			return "WEB-INF/mainPage.jsp";
     		}
     	
     		session.setAttribute("code", sessionCode);
@@ -60,8 +62,9 @@ public class IndexController {
 			model.addAttribute("files", files);
         	model.addAttribute("path", path);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
+			model.addAttribute("errorMessage", "Remote service can not be reached.");
 			e.printStackTrace();
+			return "WEB-INF/mainPage.jsp";
 		}
         return "WEB-INF/mainPage.jsp";
     }
@@ -77,8 +80,9 @@ public class IndexController {
        	model.addAttribute("files", files);
        	model.addAttribute("path", path);
 		} catch (RemoteException e) {
-		// TODO Auto-generated catch block
+			model.addAttribute("errorMessage", "Remote service can not be reached.");
 			e.printStackTrace();
+			return "WEB-INF/mainPage.jsp";
 		}
        return "WEB-INF/mainPage.jsp";
     }
@@ -92,29 +96,20 @@ public class IndexController {
 			file = client.getContent(session.getAttribute("code").toString(), fileCode);
 		 	
 	    	if (file.getContent_url().isEmpty()) {    		
-	    		 try {
-	    	       byte[] downloadedFile = Base64.decodeBase64(file.getContent().getBytes());
-	    		   response.getOutputStream().write(downloadedFile);     	        	      
-	    	       response.setContentType("application/force-download");
-	    	       response.setHeader("Content-Disposition", "attachment; filename=" + fileName); 	 
-	    	      
-	    	    } catch (Exception ex) {
-	    	    	ex.printStackTrace();
-	    	      throw new RuntimeException("IOError writing file to output stream");
-	    	    }
-	  
+
+	    		byte[] downloadedFile = Base64.decodeBase64(file.getContent().getBytes());
+ 	        	      
+	    	    response.setContentType("application/force-download");
+	    	    response.setHeader("Content-Disposition", "attachment; filename=" + fileName); 	 
 	    	}
 	    	else {
-	    		try {
-					response.sendRedirect(URL_PEERFILE + file.getContent_url());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				response.sendRedirect(URL_PEERFILE + file.getContent_url());
 	    	}
 		} catch (RemoteException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}   
     }
     
       
