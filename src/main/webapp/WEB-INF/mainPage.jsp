@@ -22,16 +22,42 @@
     <!-- Bootstrap theme -->
     <link href="res/bootstrap-3.3.4-dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- jQuery -->
-<script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.js"></script>
+    <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.js"></script>
     <!-- DataTables -->
-<script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.dataTables.min.js"></script>
     <!-- Initialization -->
 <script type="text/javascript" class="init">
-$(document).ready(function() {
-	$('#files').DataTable();
+$(document).ready( function () {
+  var table = $('#files').DataTable(
+    { "columns" : [
+      {    },
+      {    "render": formatSize },
+      {    },
+      {    }
+      ] 
+    }
+  );
 } );
-	</script>
-    <title>title
+function formatSize(data, type, row)
+{
+  if (type == "sort" || type == 'type')
+    return data;
+  if(isNaN(data)){
+    return data;
+  } else {
+    num = data;
+    var i = 0;
+    var k = 1024;
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    while(num >= k && i < sizes.length) {
+      num = (num / k).toFixed(2);
+      i++;
+    }
+    return num + " " + sizes[i];
+  }
+}
+</script>
+    <title>PeerFile - File Explorer
     </title>
   </head>
   <body style="padding-top: 60px;">
@@ -121,6 +147,6 @@ $(document).ready(function() {
       </table>
     </div>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="res/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+    <script src="res/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
   </body>
 </html>
