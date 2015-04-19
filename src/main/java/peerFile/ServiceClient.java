@@ -25,58 +25,46 @@ public class ServiceClient {
 	ServiceStub service = null;
 	
 	
-	public ServiceClient() {
-		getService();
-	}
-	
-	public void getService() {
+	public ServiceClient(){
 		try {
-			service = new ServiceStub();
-		} catch (AxisFault e1) {
+			getService();
+		} catch (AxisFault e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
-	public String logout(String code){
+	public void getService() throws AxisFault {
+		service = new ServiceStub();
+
+	}
+	
+	public String logout(String code) throws RemoteException{
 		String success = "";
 		Logout logout = new Logout();
 		logout.setSession_code(code);
-		try {
-			LogoutResponse response = service.logout(logout);
-			System.out.println(response.getSuccess());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		LogoutResponse response = service.logout(logout);
+		System.out.println(response.getSuccess());
 		return success;
 	}
 	
-	public String getLogin(String userName, String password) {
+	public String getLogin(String userName, String password) throws RemoteException {
 		String code = "";
 		
 		Login login = new Login();
-		/*login.setUser_name("test");
-		login.setPassword("tsetUNI");*/
 		login.setUser_name(userName);
 		login.setPassword(password);
 		
-		try {
-			LoginResponse response = service.login(login);
-			code = response.getSession_code();
-			System.out.println(response.getSession_code());
-			System.out.println(response.getSuccess());
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		LoginResponse response = service.login(login);
+		code = response.getSession_code();
+		System.out.println(response.getSession_code());
+		System.out.println(response.getSuccess());
 		return code;
 	}
 	
 	
-	public Entity[] browse(String code, String fileCode) {
+	public Entity[] browse(String code, String fileCode) throws RemoteException {
 		Entity[] entity = null;
-		try {
 		peerFile.wsdl.ServiceStub.Browse browse = new Browse();
 		browse.setSession_code(code);
 		browse.setParent_code(fileCode);
@@ -85,43 +73,30 @@ public class ServiceClient {
 	
 		Entities ent = res.getEntities();
 		entity = ent.getEntity();
-		} catch (RemoteException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
 		return entity;
 	}
 	
 	
-	public String getHomeFolder(String code) {
+	public String getHomeFolder(String code) throws RemoteException {
 	
-	Get_home_folder h = new Get_home_folder();  
-	h.setSession_code(code);
-	Get_home_folderResponse response = null;
-	try {
+		Get_home_folder h = new Get_home_folder();  
+		h.setSession_code(code);
+		Get_home_folderResponse response = null;
 		response = service.get_home_folder(h);
-	} catch (RemoteException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	
 		return response.getFolder_code();
 	}
 	
-	public ArrayList<PathItem> getFullPath(String code, String fileCode) {
+	public ArrayList<PathItem> getFullPath(String code, String fileCode) throws RemoteException {
 		String path = null;
 		ArrayList<PathItem> pathItems= new ArrayList<PathItem>();
 		Get_full_path_from_root fullPath = new Get_full_path_from_root();
 		fullPath.setCode(fileCode);
 		fullPath.setSession_code(code);
+		Get_full_path_from_rootResponse response = service.get_full_path_from_root(fullPath);
+		path = response.getPath();
+		pathItems = parsePath(path);
 		
-		try {
-			Get_full_path_from_rootResponse response = service.get_full_path_from_root(fullPath);
-			path = response.getPath();
-			pathItems = parsePath(path);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return pathItems;
 	}
 	
@@ -134,20 +109,17 @@ public class ServiceClient {
 			 item = items[i].split("~");
 			 pathItems.add(new PathItem(item[0], item[1]));
 		 }
+		 
 		 return pathItems;
 	}
 	
-	public Get_contentResponse  getContent(String sessionCode, String fileCode) {
+	public Get_contentResponse  getContent(String sessionCode, String fileCode) throws RemoteException {
 		Get_content content = new Get_content();
 		content.setSession_code(sessionCode);
 		content.setCode(fileCode);
 		Get_contentResponse response = null;
-		try {
-			 response = service.get_content(content);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		response = service.get_content(content);
+
 		return response;
 	}
 	
