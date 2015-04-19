@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html>
@@ -37,6 +38,13 @@
     </div>
     <div class="container">
       <form action="login" method="post" class="form-signin">
+      
+      
+      <c:if  test="${not empty errorMessage}">
+      	<div class="alert alert-danger" role="alert">
+        	<c:out value="${errorMessage}"/>
+      	</div>
+      </c:if>
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="username" class="sr-only">Username
         </label>

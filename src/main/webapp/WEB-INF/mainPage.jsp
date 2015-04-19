@@ -60,7 +60,11 @@ $(document).ready(function() {
       </div>
     </nav>
     <div class="container">
-    
+          <c:if  test="${not empty errorMessage}">
+      	<div class="alert alert-danger" role="alert">
+        	<c:out value="${errorMessage}"/>
+      	</div>
+      </c:if>
       <c:forEach var="temp" items="${path}">
       /
       <span class="btn btn-xs btn-link">
