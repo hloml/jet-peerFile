@@ -27,14 +27,14 @@ public class IndexController {
 	private ServiceClient client = new ServiceClient();
 	private final String URL_PEERFILE = "http://peerfile.eu:4000";
 
-	@RequestMapping("/")
-	public String home(Model model) {
-		return "index.jsp";
-	}
-
 	@RequestMapping("/*")
-	public String any(Model model) {
-		return "index.jsp";
+	public String home(HttpSession session, Model model) {
+		if (session.getAttribute("code") == null) {
+			return "index.jsp";
+		}
+		else{
+			return "/index";
+		}
 	}
 	
 	@RequestMapping("/logout")
@@ -67,22 +67,15 @@ public class IndexController {
 							"Username or password is wrong, please try it again.");
 					return "index.jsp";
 				}
-	
 				session.setAttribute("code", sessionCode);
 			}
-				String folder = client.getHomeFolder(session.getAttribute("code").toString());
-				Entity[] files = client.browse(session.getAttribute("code").toString(), folder);
-				ArrayList<PathItem> path = client.getFullPath(session.getAttribute("code").toString(),
-						folder);
-				model.addAttribute("files", files);
-				model.addAttribute("path", path);
 			
 		} catch (RemoteException e) {
 			model.addAttribute("errorMessage", "Remote service can not be reached.");
 			e.printStackTrace();
 			return "index.jsp";
 		}
-		return "WEB-INF/mainPage.jsp";
+		return "/index";
 	}
 
 	
@@ -118,7 +111,7 @@ public class IndexController {
 			}
 			if (fileCode == null) {
 				model.addAttribute("errorMessage", "Missing file code.");
-				return "/login";
+				return "/index";
 			}
 			path = client.getFullPath(session.getAttribute("code").toString(),
 					fileCode);
@@ -169,13 +162,13 @@ public class IndexController {
 				return;
 			}
 			if (fileCode == null) {
-				 rd = request.getRequestDispatcher("/login");
+				 rd = request.getRequestDispatcher("/index");
 				request.setAttribute("errorMessage", "Missing file code.");
 				rd.forward(request, response);
 				return;
 			}
 			if (fileName == null) {
-				 rd = request.getRequestDispatcher("/login");
+				 rd = request.getRequestDispatcher("/index");
 				request.setAttribute("errorMessage", "Missing file name.");
 				rd.forward(request, response);
 				return;
