@@ -32,6 +32,11 @@ public class IndexController {
 		return "index.jsp";
 	}
 
+	@RequestMapping("/*")
+	public String any(Model model) {
+		return "index.jsp";
+	}
+	
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		try {
@@ -53,23 +58,25 @@ public class IndexController {
 	String login(@RequestParam(value = "username", required=false) String username,
 			@RequestParam(value = "password", required=false) String password, HttpSession session, Model model) {
 		String sessionCode = "";
-
+		
 		try {
-			sessionCode = client.getLogin(username, password);
-			if (sessionCode.equals(null) || sessionCode.equals("")) {
-				model.addAttribute("errorMessage",
-						"Username or password is wrong, please try it again.");
-				return "index.jsp";
+			if(session.getAttribute("code") == null){
+				sessionCode = client.getLogin(username, password);
+				if (sessionCode.equals(null) || sessionCode.equals("")) {
+					model.addAttribute("errorMessage",
+							"Username or password is wrong, please try it again.");
+					return "index.jsp";
+				}
+	
+				session.setAttribute("code", sessionCode);
 			}
-
-			session.setAttribute("code", sessionCode);
-
-			String folder = client.getHomeFolder(session.getAttribute("code").toString());
-			Entity[] files = client.browse(session.getAttribute("code").toString(), folder);
-			ArrayList<PathItem> path = client.getFullPath(session.getAttribute("code").toString(),
-					folder);
-			model.addAttribute("files", files);
-			model.addAttribute("path", path);
+				String folder = client.getHomeFolder(session.getAttribute("code").toString());
+				Entity[] files = client.browse(session.getAttribute("code").toString(), folder);
+				ArrayList<PathItem> path = client.getFullPath(session.getAttribute("code").toString(),
+						folder);
+				model.addAttribute("files", files);
+				model.addAttribute("path", path);
+			
 		} catch (RemoteException e) {
 			model.addAttribute("errorMessage", "Remote service can not be reached.");
 			e.printStackTrace();
@@ -109,7 +116,10 @@ public class IndexController {
 				model.addAttribute("errorMessage", "Access denied. Please log in.");
 				return "index.jsp";
 			}
-			
+			if (fileCode == null) {
+				model.addAttribute("errorMessage", "Missing file code.");
+				return "/login";
+			}
 			path = client.getFullPath(session.getAttribute("code").toString(),
 					fileCode);
 			files = client.browse(session.getAttribute("code").toString(), fileCode);
@@ -159,11 +169,13 @@ public class IndexController {
 				return;
 			}
 			if (fileCode == null) {
+				 rd = request.getRequestDispatcher("/login");
 				request.setAttribute("errorMessage", "Missing file code.");
 				rd.forward(request, response);
 				return;
 			}
 			if (fileName == null) {
+				 rd = request.getRequestDispatcher("/login");
 				request.setAttribute("errorMessage", "Missing file name.");
 				rd.forward(request, response);
 				return;
