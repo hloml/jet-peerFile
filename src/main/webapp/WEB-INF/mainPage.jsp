@@ -121,10 +121,10 @@ function formatSize(data, type, row)
             <td>
       		<c:choose>
       			<c:when test="${temp.getIsfolder()}">
-      				<a href="browse?fileCode=${temp.getCode()}"><c:out value="${temp.getName()}"></c:out></a>
+      				<a href="browse?fileCode=${temp.getCode()}"><c:out value="${temp.getName()}~${temp.getCode()}~"></c:out></a>
       			</c:when>
       			<c:otherwise>
-      				<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}"><c:out value="${temp.getName()}"/></a>
+      				<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}&parentCode=${parentCode}"><c:out value="${temp.getName()}~${temp.getCode()}~"/></a>
       			</c:otherwise>
       		</c:choose>
       		  </td>
