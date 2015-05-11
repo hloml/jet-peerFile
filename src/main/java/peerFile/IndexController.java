@@ -30,10 +30,9 @@ public class IndexController {
 
 	@RequestMapping("/*")
 	public String home(HttpSession session, Model model) {
-		String url = isLogged(session, model);
-
-		if (!url.isEmpty())
-			return url;
+		if (session.getAttribute("code") == null) {
+			return "index.jsp";
+		}
 		else
 			return "/index";
 	}
