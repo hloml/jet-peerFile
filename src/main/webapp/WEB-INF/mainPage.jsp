@@ -94,8 +94,16 @@ function formatSize(data, type, row)
       <c:forEach var="temp" items="${path}">
       /
       <span class="btn btn-xs btn-link">
-		    <a href="browse?fileCode=${temp.getFileCode()}"><c:out value="${temp.getFileName()}"></c:out></a>
-		  </span>
+          <c:choose>
+      	      <c:when test="${empty temp.getFileName()}">
+      		      <a href="browse?fileCode=${temp.getFileCode()}"><c:out value="${temp.getFileCode()}"></c:out></a>
+      		  </c:when>
+      	      <c:otherwise>
+      			  <a href="browse?fileCode=${temp.getFileCode()}"><c:out value="${temp.getFileName()}"></c:out></a>
+      		  </c:otherwise>
+      	  </c:choose>
+		    
+	  </span>
       </c:forEach>
     
       <hr style="margin-top: 6px; margin-bottom: 6px; padding-bottom: 6px;">
@@ -123,6 +131,9 @@ function formatSize(data, type, row)
       			<c:when test="${temp.getIsfolder()}">
       				<a href="browse?fileCode=${temp.getCode()}"><c:out value="${temp.getName()}~${temp.getCode()}~"></c:out></a>
       			</c:when>
+      			<c:when test="${temp.getSize() eq -1}">
+    				<c:out value="${temp.getName()}~${temp.getCode()}~"/>
+  				</c:when>
       			<c:otherwise>
       				<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}&parentCode=${parentCode}"><c:out value="${temp.getName()}~${temp.getCode()}~"/></a>
       			</c:otherwise>
@@ -133,6 +144,9 @@ function formatSize(data, type, row)
       			<c:when test="${temp.getIsfolder()}">
       				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
       			</c:when>
+      			<c:when test="${temp.getSize() eq -1}">
+    				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+  				</c:when>
       			<c:otherwise>
       				<c:out value="${temp.getSize()}"/>
       			</c:otherwise>
