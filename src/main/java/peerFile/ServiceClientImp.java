@@ -106,10 +106,10 @@ public class ServiceClientImp implements ServiceClient {
 		ArrayList<PathItem> pathItems = new ArrayList<PathItem>();
 		String[] items = path.split("~\\\\");
 		String[] item;
-
 		for (int i = 0; i < items.length; i++) {
 			item = items[i].split("~");
-			pathItems.add(new PathItem(item[0], item[1]));
+			if (item.length >= 2)
+				pathItems.add(new PathItem(item[0], item[1]));
 		}
 		return pathItems;
 	}

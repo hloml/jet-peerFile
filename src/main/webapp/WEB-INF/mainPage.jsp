@@ -88,7 +88,9 @@ function formatSize(data, type, row)
     <div class="container">
           <c:if  test="${not empty errorMessage}">
       	<div class="alert alert-danger" role="alert">
-        	<c:out value="${errorMessage}"/>
+      		<c:forEach var="message" items="${errorMessage}">
+        		<c:out value="${message}"/> <br>
+        	</c:forEach>
       	</div>
       </c:if>
       <c:forEach var="temp" items="${path}">

@@ -42,7 +42,9 @@
       
       <c:if  test="${not empty errorMessage}">
       	<div class="alert alert-danger" role="alert">
-        	<c:out value="${errorMessage}"/>
+        	<c:forEach var="message" items="${errorMessage}">
+        		<c:out value="${message}"/> <br>
+        	</c:forEach>
       	</div>
       </c:if>
         <h2 class="form-signin-heading">Please sign in</h2>
