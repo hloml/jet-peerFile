@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * 
+ * Validace parametrů a zachycení všech možných chyb v operacích se soubory/složkami. 
  * 
  * @author Wajzy
  *

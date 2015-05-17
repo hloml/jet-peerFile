@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 /**
- * Rozhraní souborových služeb. zobrazení domovského adresáře, procházení adresářovou strukturou a stahování souboru.
+ * Rozhraní souborových služeb. Zobrazení domovského adresáře, procházení adresářovou strukturou a stahování souboru.
  * 
  * @author
  *
@@ -21,7 +21,7 @@ public interface FileService {
 	 * 
 	 * @param session Aktuální session.
 	 * @param model Model aplikace.
-	 * @return String přesměrování.
+	 * @return Adresa přesměrování.
 	 */
 	public String index(HttpSession session, Model model);
 	
@@ -33,7 +33,7 @@ public interface FileService {
 	 * @param response Http odpověď.
 	 * @param fileCode Kód souboru/složky.
 	 * @param errors Seznam chyb.
-	 * @return
+	 * @return Adresa přesměrování.
 	 */
 	public String browse(HttpSession session, Model model, HttpServletResponse response, String fileCode, ArrayList<String> errors);
 	

@@ -9,6 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+/**
+ * Inplementace logovacích služeb.
+ * 
+ * @author
+ *
+ */
 @Service
 public class LoginServiceImp implements LoginService {
 
@@ -18,6 +24,9 @@ public class LoginServiceImp implements LoginService {
 	private final String code = "code";
 	private final String error = "errorMessage";
 
+	/* (non-Javadoc)
+	 * @see peerFile.LoginService#logout(javax.servlet.http.HttpSession, org.springframework.ui.Model)
+	 */
 	public String logout(HttpSession session, Model model) {
 		try {
 			client.logout(session.getAttribute(code).toString());
@@ -30,6 +39,9 @@ public class LoginServiceImp implements LoginService {
 		return "index.jsp";
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.LoginService#login(javax.servlet.http.HttpSession, org.springframework.ui.Model, java.lang.String, java.lang.String)
+	 */
 	public String login(HttpSession session, Model model, String username, String password) {
 		String sessionCode = "";
 		try {
