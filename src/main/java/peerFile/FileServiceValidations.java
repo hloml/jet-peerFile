@@ -110,9 +110,7 @@ public class FileServiceValidations {
 		errors.add("Remote service can not be reached.");
 		return errors;
 	}
-	
-	
-	
+		
 	
 	/**
 	 * Zachycuje chybu při přesměrování.

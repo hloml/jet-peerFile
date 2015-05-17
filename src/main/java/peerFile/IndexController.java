@@ -15,6 +15,10 @@ import org.springframework.stereotype.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author
+ *
+ */
 @Controller
 @EnableAutoConfiguration
 @ComponentScan("peerFile")
@@ -28,6 +32,11 @@ public class IndexController {
 
 	private final String error = "errorMessage";
 
+	/**
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/*")
 	public String home(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
@@ -38,6 +47,11 @@ public class IndexController {
 		}
 	}
 
+	/**
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		String url = isLogged(session, model);
@@ -48,6 +62,13 @@ public class IndexController {
 		return ls.logout(session, model);
 	}
 
+	/**
+	 * @param username
+	 * @param password
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/login")
 	String login(@RequestParam(value = "username", required = false) String username,
 			@RequestParam(value = "password", required = false) String password,
@@ -56,6 +77,11 @@ public class IndexController {
 		return ls.login(session, model, username, password);
 	}
 
+	/**
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/index")
 	String index(HttpSession session, Model model) {
 		String url = isLogged(session, model);
@@ -66,6 +92,13 @@ public class IndexController {
 		return fs.index(session, model);
 	}
 
+	/**
+	 * @param fileCode
+	 * @param session
+	 * @param model
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("/browse")
 	String browse(@RequestParam(value = "fileCode", required = false) String fileCode,
 			HttpSession session, Model model, HttpServletResponse response) {
@@ -85,6 +118,15 @@ public class IndexController {
 		return fs.browse(session, model, response, fileCode, errors);
 	}
 
+	/**
+	 * @param fileCode
+	 * @param fileName
+	 * @param parentCode
+	 * @param session
+	 * @param model
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping("/download")
 	public void download(@RequestParam(value = "fileCode", required = false) String fileCode,
 			@RequestParam(value = "name", required = false) String fileName,
@@ -107,6 +149,11 @@ public class IndexController {
 		fs.download(session, model, request, response, fileCode, fileName, parentCode, errors);
 	}
 
+	/**
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	private String isLogged(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
 			ArrayList<String> errors = new ArrayList<String>();
@@ -117,6 +164,10 @@ public class IndexController {
 		return "";
 	}
 
+	/**
+	 * @param response
+	 * @param address
+	 */
 	private void redirect(HttpServletResponse response, String address) {
 		try {
 			response.sendRedirect(address);
@@ -125,6 +176,10 @@ public class IndexController {
 		}
 	}
 
+	/**
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		SpringApplication.run(IndexController.class, args);

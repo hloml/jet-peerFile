@@ -22,11 +22,20 @@ import peerFile.wsdl.ServiceStub.Get_full_path_from_root;
 import peerFile.wsdl.ServiceStub.Get_content;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
 
+/**
+ * Implementace klientských metod, které slouží ke komunikaci se servrem.
+ * 
+ * @author 
+ *
+ */
 @Service
 public class ServiceClientImp implements ServiceClient {
 
 	ServiceStub service = null;
 
+	/**
+	 * Konstruktor.
+	 */
 	public ServiceClientImp() {
 		try {
 			getService();
@@ -36,11 +45,17 @@ public class ServiceClientImp implements ServiceClient {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.ServiceClient#getService()
+	 */
 	public void getService() throws AxisFault {
 		service = new ServiceStub();
 
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.ServiceClient#logout(java.lang.String)
+	 */
 	public String logout(String code) throws RemoteException {
 		Logout logout = new Logout();
 		logout.setSession_code(code);
@@ -50,6 +65,9 @@ public class ServiceClientImp implements ServiceClient {
 		return success;
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.ServiceClient#getLogin(java.lang.String, java.lang.String)
+	 */
 	public String getLogin(String userName, String password)
 			throws RemoteException {
 		String code = "";
@@ -63,6 +81,9 @@ public class ServiceClientImp implements ServiceClient {
 		return code;
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.ServiceClient#browse(java.lang.String, java.lang.String)
+	 */
 	public Entity[] browse(String code, String fileCode) throws RemoteException {
 		Entity[] entity = null;
 		peerFile.wsdl.ServiceStub.Browse browse = new Browse();
@@ -77,6 +98,9 @@ public class ServiceClientImp implements ServiceClient {
 		return entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.ServiceClient#getHomeFolder(java.lang.String)
+	 */
 	public String getHomeFolder(String code) throws RemoteException {
 
 		Get_home_folder h = new Get_home_folder();
@@ -102,6 +126,10 @@ public class ServiceClientImp implements ServiceClient {
 		return pathItems;
 	}
 
+	/**
+	 * @param path Cesta.
+	 * @return
+	 */
 	private ArrayList<PathItem> parsePath(String path) {
 		ArrayList<PathItem> pathItems = new ArrayList<PathItem>();
 		String[] items = path.split("~\\\\");
@@ -114,10 +142,13 @@ public class ServiceClientImp implements ServiceClient {
 		return pathItems;
 	}
 
-	public Get_contentResponse getContent(String sessionCode, String fileCode)
+	/* (non-Javadoc)
+	 * @see peerFile.ServiceClient#getContent(java.lang.String, java.lang.String)
+	 */
+	public Get_contentResponse getContent(String code, String fileCode)
 			throws RemoteException {
 		Get_content content = new Get_content();
-		content.setSession_code(sessionCode);
+		content.setSession_code(code);
 		content.setCode(fileCode);
 
 		Get_contentResponse response = null;
