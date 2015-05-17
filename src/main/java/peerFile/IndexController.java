@@ -33,15 +33,17 @@ public class IndexController {
 		if (session.getAttribute("code") == null) {
 			return "index.jsp";
 		}
-		else
+		else {
 			return "/index";
+		}
 	}
 
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		String url = isLogged(session, model);
-		if (!url.isEmpty())
+		if (!url.isEmpty()){
 			return url;
+		}
 
 		return ls.logout(session, model);
 	}
@@ -57,8 +59,9 @@ public class IndexController {
 	@RequestMapping("/index")
 	String index(HttpSession session, Model model) {
 		String url = isLogged(session, model);
-		if (!url.isEmpty())
+		if (!url.isEmpty()){
 			return url;
+		}
 
 		return fs.index(session, model);
 	}
@@ -68,8 +71,9 @@ public class IndexController {
 			HttpSession session, Model model, HttpServletResponse response) {
 
 		String url = isLogged(session, model);
-		if (!url.isEmpty())
+		if (!url.isEmpty()){
 			return url;
+		}
 
 		ArrayList<String> errors = FileServiceValidations.validateBrowse(fileCode);
 		if (errors.size() != 0) {
@@ -91,7 +95,6 @@ public class IndexController {
 		String url = isLogged(session, model);
 		if (!url.isEmpty()) {
 			redirect(response, url);
-			;
 		}
 
 		ArrayList<String> errors = FileServiceValidations.validateDownload(fileCode, fileName);
