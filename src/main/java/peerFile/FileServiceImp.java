@@ -16,6 +16,12 @@ import org.springframework.ui.Model;
 import peerFile.wsdl.ServiceStub.Entity;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
 
+/**
+ * Implementace jednotlyvých souborových služeb.
+ * 
+ * @author Wajzy
+ *
+ */
 @Service
 public class FileServiceImp implements FileService {
 
@@ -26,6 +32,9 @@ public class FileServiceImp implements FileService {
 	private final String code = "code";
 	private final String error = "errorMessage";
 
+	/* (non-Javadoc)
+	 * @see peerFile.FileService#index(javax.servlet.http.HttpSession, org.springframework.ui.Model)
+	 */
 	public String index(HttpSession session, Model model) {
 		try {
 			String folder = client.getHomeFolder(session.getAttribute(code).toString());
@@ -41,6 +50,9 @@ public class FileServiceImp implements FileService {
 		return "WEB-INF/mainPage.jsp";
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.FileService#browse(javax.servlet.http.HttpSession, org.springframework.ui.Model, javax.servlet.http.HttpServletResponse, java.lang.String, java.util.ArrayList)
+	 */
 	public String browse(HttpSession session, Model model, HttpServletResponse response,
 			String fileCode, ArrayList<String> errors) {
 		Entity[] files;
@@ -66,6 +78,9 @@ public class FileServiceImp implements FileService {
 		return "WEB-INF/mainPage.jsp";
 	}
 
+	/* (non-Javadoc)
+	 * @see peerFile.FileService#download(javax.servlet.http.HttpSession, org.springframework.ui.Model, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String, java.lang.String, java.lang.String, java.util.ArrayList)
+	 */
 	public void download(HttpSession session, Model model, HttpServletRequest request,
 			HttpServletResponse response, String fileCode, String fileName, String parentCode,
 			ArrayList<String> errors) {

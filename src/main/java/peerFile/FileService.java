@@ -38,7 +38,7 @@ public interface FileService {
 	public String browse(HttpSession session, Model model, HttpServletResponse response, String fileCode, ArrayList<String> errors);
 	
 	/**
-	 * Stahování souborů.
+	 * Stažení malého souboru a přesměrování pokud se jedná o soubor větší.
 	 * 
 	 * @param session Aktuální session.
 	 * @param model Model aplikace.

@@ -7,9 +7,21 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 
 
+/**
+ * 
+ * 
+ * @author Wajzy
+ *
+ */
 public class FileServiceValidations {
 
 
+	/**
+	 * Ověření parametru fileCode, který musí mít nějakou hodnotu.
+	 * 
+	 * @param fileCode Kód souboru/složky
+	 * @return Seznam chyb
+	 */
 	public static ArrayList<String> validateBrowse(String fileCode) {
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -19,6 +31,14 @@ public class FileServiceValidations {
 		return errors;
 	}
 
+	/**
+	 * Ověření jestli uživatel má přístup do složky a jestli složka existuje.  
+	 * 
+	 * @param e Vyjímka.
+	 * @param response Http odpověď.
+	 * @param path Cesta v souborovém systému.
+	 * @return Seznam chyb.
+	 */
 	public static ArrayList<String> validateBrowseService(RemoteException e,  HttpServletResponse response,ArrayList<PathItem> path ) {
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -39,6 +59,13 @@ public class FileServiceValidations {
 		return errors;
 	}
 
+	/**
+	 * Ověření parametrů fileCode a fileName, které oba musí mít nějakou hodnotu.
+	 * 
+	 * @param fileCode Kód souboru/složky.
+	 * @param fileName Jméno Kód souboru/složky.
+	 * @return Seznam chyb.
+	 */
 	public static ArrayList<String> validateDownload(String fileCode, String fileName) {
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -52,6 +79,14 @@ public class FileServiceValidations {
 		return errors;
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param e Vyjímka.
+	 * @param response Http odpověď.
+	 * @param parentCode Kód nadřazeného souboru/složky.
+	 * @return Seznam chyb.
+	 */
 	public static ArrayList<String> validateDownloadService(RemoteException e,  HttpServletResponse response, String parentCode ) {
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -64,6 +99,12 @@ public class FileServiceValidations {
 		return errors;
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param e Vyjímka.
+	 * @return Seznam chyb.
+	 */
 	public static ArrayList<String> validateIndexService(RemoteException e ) {
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.add("Remote service can not be reached.");
@@ -73,6 +114,12 @@ public class FileServiceValidations {
 	
 	
 	
+	/**
+	 * Zachycuje chybu při přesměrování.
+	 * 
+	 * @param response Http odpověď.
+	 * @param address Adresa přesměrování.
+	 */
 	private static void redirect(HttpServletResponse response, String address) {
 		try {
 			response.sendRedirect(address);
