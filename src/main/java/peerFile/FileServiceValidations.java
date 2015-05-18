@@ -48,6 +48,7 @@ public class FileServiceValidations {
 
 		if (e.getLocalizedMessage().toLowerCase().contains("insufficient rights")) {
 			errors.add("You don't have permission to access this folder.");
+			logger.error("Not enought permission");
 			if (path != null && path.size() - 2 >= 0) {
 				redirect(response, "/browse?fileCode=" + path.get(path.size() - 2).getFileCode());
 			} else {
@@ -55,9 +56,11 @@ public class FileServiceValidations {
 			}
 		} else if (e.getLocalizedMessage().toLowerCase().contains("folder not found")) {
 			errors.add("Folder not found");
+			logger.error("Folder not found");
 			redirect(response, "/index");
 		} else {
 			errors.add("Remote service can not be reached.");
+			logger.error("Remote service can not be reached.");
 			redirect(response, "/index");
 		}
 		return errors;
@@ -132,6 +135,7 @@ public class FileServiceValidations {
 			response.sendRedirect(address);
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 	

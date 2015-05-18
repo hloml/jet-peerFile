@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import org.apache.axis2.AxisFault;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import peerFile.wsdl.ServiceStub;
@@ -31,6 +32,8 @@ import peerFile.wsdl.ServiceStub.Get_contentResponse;
 @Service
 public class ServiceClientImp implements ServiceClient {
 
+	private final static Logger logger = Logger.getLogger(ServiceClientImp.class);
+	
 	ServiceStub service = null;
 
 	/**
@@ -41,6 +44,7 @@ public class ServiceClientImp implements ServiceClient {
 			getService();
 		} catch (AxisFault e) {
 			// TODO Auto-generated catch block
+			logger.error("Axis Fault");
 			e.printStackTrace();
 		}
 	}

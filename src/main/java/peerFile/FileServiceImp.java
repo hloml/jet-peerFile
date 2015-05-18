@@ -20,7 +20,7 @@ import peerFile.wsdl.ServiceStub.Get_contentResponse;
 /**
  * Implementace jednotlyvých souborových služeb.
  * 
- * @author Wajzy
+ * @author
  *
  */
 @Service
@@ -99,6 +99,8 @@ public class FileServiceImp implements FileService {
 			} else {
 				response.sendRedirect(URL_PEERFILE + file.getContent_url());
 			}
+			
+			logger.info("File " + fileName + " was downloaded");
 		} catch (RemoteException e1) {
 			errors = FileServiceValidations.validateDownloadService(e1, response, parentCode);
 			session.setAttribute(error, errors);
