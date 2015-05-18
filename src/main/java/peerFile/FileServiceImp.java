@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,11 @@ import peerFile.wsdl.ServiceStub.Get_contentResponse;
  */
 @Service
 public class FileServiceImp implements FileService {
-
+	
 	@Autowired
 	private ServiceClient client;
 
+	private final static Logger logger = Logger.getLogger(FileServiceImp.class);
 	private final String URL_PEERFILE = "http://peerfile.eu:4000";
 	private final String code = "code";
 	private final String error = "errorMessage";

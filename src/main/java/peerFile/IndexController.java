@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @EnableAutoConfiguration
 @ComponentScan("peerFile")
 public class IndexController {
-
+	
 	@Autowired
 	private FileService fs;
 
@@ -33,6 +33,8 @@ public class IndexController {
 	private final String error = "errorMessage";
 
 	/**
+	 * Přesměrování na úvodní stránku a v případě přihlášeného uživatele na jeho domovský adresář.
+	 * 
 	 * @param session Aktuální session.
 	 * @param model Model aplikace.
 	 * @return Adresa přesměrování.

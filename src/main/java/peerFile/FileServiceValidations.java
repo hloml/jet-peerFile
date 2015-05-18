@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Validace parametrů a zachycení všech možných chyb v operacích se soubory/složkami. 
@@ -15,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class FileServiceValidations {
 
-
+	private final static Logger logger = Logger.getLogger(FileServiceValidations.class);
+	
 	/**
 	 * Ověření parametru fileCode, který musí mít nějakou hodnotu.
 	 * 
@@ -27,6 +30,7 @@ public class FileServiceValidations {
 
 		if (fileCode == null) {
 			errors.add("Missing file code.");
+			logger.error("Missing file code.");
 		}
 		return errors;
 	}
@@ -71,9 +75,11 @@ public class FileServiceValidations {
 
 		if (fileCode == null) {
 			errors.add("Missing file code.");
+			logger.error("Missing file code.");
 		}
 		if (fileName == null) {
 			errors.add("Missing file name.");
+			logger.error("Missing file name.");
 		}
 
 		return errors;
@@ -92,8 +98,10 @@ public class FileServiceValidations {
 
 		if (e.getLocalizedMessage().toLowerCase().contains("entity has no content")) {
 			errors.add("File does not have content.");
+			logger.error("File does not have content.");
 		} else {
 			errors.add("Remote service can not be reached.");
+			logger.error("Remote service can not be reached.");
 		}
 		redirect(response, "/browse?fileCode=" + parentCode);
 		return errors;
@@ -108,6 +116,7 @@ public class FileServiceValidations {
 	public static ArrayList<String> validateIndexService(RemoteException e ) {
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.add("Remote service can not be reached.");
+		logger.error("Remote service can not be reached.");
 		return errors;
 	}
 		
