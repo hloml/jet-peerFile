@@ -33,9 +33,9 @@ public class IndexController {
 	private final String error = "errorMessage";
 
 	/**
-	 * @param session
-	 * @param model
-	 * @return
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @return Adresa přesměrování.
 	 */
 	@RequestMapping("/*")
 	public String home(HttpSession session, Model model) {
@@ -48,9 +48,11 @@ public class IndexController {
 	}
 
 	/**
-	 * @param session
-	 * @param model
-	 * @return
+	 * Odhlášení uživatele.
+	 * 
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @return Adresa přesměrování.
 	 */
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
@@ -63,11 +65,13 @@ public class IndexController {
 	}
 
 	/**
-	 * @param username
-	 * @param password
-	 * @param session
-	 * @param model
-	 * @return
+	 * Přihlášení uživatele.
+	 * 
+	 * @param username Uživatelské jméno.
+	 * @param password Uživatelské heslo.
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @return Adresa přesměrování.
 	 */
 	@RequestMapping("/login")
 	String login(@RequestParam(value = "username", required = false) String username,
@@ -78,9 +82,11 @@ public class IndexController {
 	}
 
 	/**
-	 * @param session
-	 * @param model
-	 * @return
+	 * Vypsání domovského adresáře.
+	 * 
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @return Adresa přesměrování.
 	 */
 	@RequestMapping("/index")
 	String index(HttpSession session, Model model) {
@@ -93,11 +99,13 @@ public class IndexController {
 	}
 
 	/**
-	 * @param fileCode
-	 * @param session
-	 * @param model
-	 * @param response
-	 * @return
+	 * Procházení adresářové struktury.
+	 * 
+	 * @param fileCode Kód souboru/složky.
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @param response Http odpověď.
+	 * @return Adresa přesměrování.
 	 */
 	@RequestMapping("/browse")
 	String browse(@RequestParam(value = "fileCode", required = false) String fileCode,
@@ -119,13 +127,15 @@ public class IndexController {
 	}
 
 	/**
-	 * @param fileCode
-	 * @param fileName
-	 * @param parentCode
-	 * @param session
-	 * @param model
-	 * @param request
-	 * @param response
+	 * Stažení souboru.
+	 * 
+	 * @param fileCode Kód souboru/složky.
+	 * @param fileName Jméno souboru/složky.
+	 * @param parentCode Kód nadřazené složky.
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @param request Http žádost.
+	 * @param response Http odpověď.
 	 */
 	@RequestMapping("/download")
 	public void download(@RequestParam(value = "fileCode", required = false) String fileCode,
@@ -150,9 +160,11 @@ public class IndexController {
 	}
 
 	/**
-	 * @param session
-	 * @param model
-	 * @return
+	 * Ověření, že je uživatel již přihlášený.
+	 * 
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @return Adresa přesměrování.
 	 */
 	private String isLogged(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
@@ -165,8 +177,10 @@ public class IndexController {
 	}
 
 	/**
-	 * @param response
-	 * @param address
+	 * Přesměrování.
+	 * 
+	 * @param response Http odpověď.
+	 * @param address Adresa přesměrování.
 	 */
 	private void redirect(HttpServletResponse response, String address) {
 		try {
@@ -177,8 +191,10 @@ public class IndexController {
 	}
 
 	/**
-	 * @param args
-	 * @throws Exception
+	 * Hlavní metoda, která pustí aplikaci.
+	 * 
+	 * @param args Pole argumentů.
+	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
 
