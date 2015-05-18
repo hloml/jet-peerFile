@@ -147,7 +147,7 @@ function formatSize(data, type, row)
       				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
       			</c:when>
       			<c:when test="${temp.getSize() eq -1}">
-    				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+    				<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
   				</c:when>
       			<c:otherwise>
       				<c:out value="${temp.getSize()}"/>
