@@ -131,6 +131,7 @@ public class ServiceClientImp implements ServiceClient {
 	}
 
 	/**
+	 * Create path into arrayList for file from root
 	 * @param path Cesta.
 	 * @return
 	 */

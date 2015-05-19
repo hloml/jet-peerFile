@@ -18,7 +18,7 @@ import peerFile.wsdl.ServiceStub.Entity;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
 
 /**
- * Implementace jednotlyvých souborových služeb.
+ * Implementace jednotlivých souborových služeb.
  * 
  * @author
  *
@@ -72,7 +72,6 @@ public class FileServiceImp implements FileService {
 				session.removeAttribute(error);
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
 			errors = FileServiceValidations.validateBrowseService(e, response, path);
 			session.setAttribute(error, errors);
 			return "";
@@ -105,7 +104,7 @@ public class FileServiceImp implements FileService {
 			errors = FileServiceValidations.validateDownloadService(e1, response, parentCode);
 			session.setAttribute(error, errors);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 

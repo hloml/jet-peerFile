@@ -134,7 +134,6 @@ public class FileServiceValidations {
 		try {
 			response.sendRedirect(address);
 		} catch (IOException e) {
-			e.printStackTrace();
 			logger.error(e);
 		}
 	}
