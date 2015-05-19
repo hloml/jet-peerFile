@@ -1,5 +1,6 @@
 package peerFile;
 
+import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
@@ -31,6 +33,7 @@ public class IndexController {
 	private LoginService ls;
 
 	private final String error = "errorMessage";
+	private final static Logger logger = Logger.getLogger(IndexController.class);
 
 	/**
 	 * Přesměrování na úvodní stránku a v případě přihlášeného uživatele na jeho domovský adresář.
@@ -188,7 +191,7 @@ public class IndexController {
 		try {
 			response.sendRedirect(address);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
