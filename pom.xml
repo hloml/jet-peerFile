@@ -7,9 +7,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Unicorn Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	
 
-	
+
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -21,13 +21,13 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -35,9 +35,9 @@
 
 
 		<dependency>
-        	<groupId>org.springframework.boot</groupId>
-       	 	<artifactId>spring-boot-starter-web</artifactId>
-    	</dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
 
 		<dependency>
@@ -94,39 +94,48 @@
 				</includes>
 			</resource>
 		</resources>
-		
-			<plugins>
-				<!-- tag::wsdl[] -->
 
-				<plugin>
-					<groupId>org.apache.axis2</groupId>
-					<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
-					<version>1.6.2</version>
-					<configuration>
+		<plugins>
+			<!-- tag::wsdl[] -->
+
+			<plugin>
+				<groupId>org.apache.axis2</groupId>
+				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+				<version>1.6.2</version>
+				<configuration>
 					<unpackClasses>false</unpackClasses>
-						<packageName>peerFile.wsdl</packageName>
-						<wsdlFile>http://peerfile.eu:4000/soap/wsdl</wsdlFile>
-						<databindingName>adb</databindingName>
-						<outputDirectory>src/main/wsdl</outputDirectory>
+					<packageName>peerFile.wsdl</packageName>
+					<wsdlFile>http://peerfile.eu:4000/soap/wsdl</wsdlFile>
+					<databindingName>adb</databindingName>
+					<outputDirectory>src/main/wsdl</outputDirectory>
 
-					</configuration>
-					<executions>
-						<execution>			<!-- This is not error, just eclipse have some trouble (it run and generate sources correctly) -->
-							<goals>
-								<goal>wsdl2code</goal>
-							</goals>
+				</configuration>
+				<executions>
+					<execution>			<!-- This is not error, just eclipse have some trouble (it run and generate 
+							sources correctly) -->
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
 
-						</execution>
-					</executions>
-				</plugin>	
-				<!-- end::wsdl[] -->
-				
-				<plugin>
-                	<groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            	</plugin>
-			</plugins>
-		
+					</execution>
+				</executions>
+			</plugin>
+			<!-- end::wsdl[] -->
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<requiresUnpack>
+						<dependency>
+							<groupId>org.apache.axis2</groupId>
+							<artifactId>axis2</artifactId>
+						</dependency>
+					</requiresUnpack>
+				</configuration>
+			</plugin>
+		</plugins>
+
 
 	</build>
 
