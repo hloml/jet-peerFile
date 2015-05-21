@@ -49,7 +49,7 @@ public class FileServiceImp implements FileService {
 			ArrayList<String> errors = FileServiceValidations.validateIndexService(e);
 			model.addAttribute(error, errors);
 		}
-		return "WEB-INF/mainPage.jsp";
+		return "mainPage";
 	}
 
 	/* (non-Javadoc)
@@ -76,7 +76,7 @@ public class FileServiceImp implements FileService {
 			session.setAttribute(error, errors);
 			return "";
 		}
-		return "WEB-INF/mainPage.jsp";
+		return "mainPage";
 	}
 
 	/* (non-Javadoc)

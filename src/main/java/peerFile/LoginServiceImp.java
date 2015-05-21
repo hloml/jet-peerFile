@@ -39,7 +39,7 @@ public class LoginServiceImp implements LoginService {
 			ArrayList<String> errors = LoginServiceValidations.validateLogoutService(e);
 			model.addAttribute(error, errors);
 		}
-		return "index.jsp";
+		return "index";
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +55,7 @@ public class LoginServiceImp implements LoginService {
 					errors.add("Username or password is wrong, please try it again.");
 					model.addAttribute(error, errors);
 					logger.error("Wrong username or password: " + username);
-					return "index.jsp";
+					return "index";
 				}
 				logger.info("User " + username + " logged in - " + sessionCode);
 				session.setAttribute("code", sessionCode);
@@ -64,9 +64,9 @@ public class LoginServiceImp implements LoginService {
 		} catch (RemoteException e) {
 			ArrayList<String> errors = LoginServiceValidations.validateLoginService(e);
 			model.addAttribute(error, errors);
-			return "index.jsp";
+			return "index";
 		}
 
-		return "/index";
+		return "redirect:/index";
 	}
 }

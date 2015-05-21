@@ -44,8 +44,7 @@ public class ServiceClientImp implements ServiceClient {
 			getService();
 		} catch (AxisFault e) {
 			// TODO Auto-generated catch block
-			logger.error("Axis Fault");
-			e.printStackTrace();
+			logger.error("Axis Fault", e);
 		}
 	}
 

@@ -45,10 +45,10 @@ public class IndexController {
 	@RequestMapping("/*")
 	public String home(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
-			return "index.jsp";
+			return "index";
 		}
 		else {
-			return "/index";
+			return "redirect:index";
 		}
 	}
 
@@ -176,7 +176,7 @@ public class IndexController {
 			ArrayList<String> errors = new ArrayList<String>();
 			errors.add("Access denied. Please log in.");
 			model.addAttribute("errorMessage", errors);
-			return "index.jsp";
+			return "index";
 		}
 		return "";
 	}
