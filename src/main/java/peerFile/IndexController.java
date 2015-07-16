@@ -10,8 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.*;
 import org.springframework.ui.Model;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
  *
  */
 @Controller
-@EnableAutoConfiguration
 @ComponentScan("peerFile")
 public class IndexController {
 	
@@ -193,16 +190,5 @@ public class IndexController {
 		} catch (IOException e) {
 			logger.error(e);
 		}
-	}
-
-	/**
-	 * Hlavní metoda, která pustí aplikaci.
-	 * 
-	 * @param args Pole argumentů.
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception {
-
-		SpringApplication.run(IndexController.class, args);
 	}
 }

@@ -97,11 +97,11 @@ function formatSize(data, type, row)
       /
       <span class="btn btn-xs btn-link">
           <c:choose>
-      	      <c:when test="${empty temp.getFileName()}">
-      		      <a href="browse?fileCode=${temp.getFileCode()}"><c:out value="${temp.getFileCode()}"></c:out></a>
+      	      <c:when test="${empty temp.fileName}">
+      		      <a href="browse?fileCode=${temp.fileCode}"><c:out value="${temp.fileCode}"></c:out></a>
       		  </c:when>
       	      <c:otherwise>
-      			  <a href="browse?fileCode=${temp.getFileCode()}"><c:out value="${temp.getFileName()}"></c:out></a>
+      			  <a href="browse?fileCode=${temp.fileCode}"><c:out value="${temp.fileName}"></c:out></a>
       		  </c:otherwise>
       	  </c:choose>
 		    
@@ -130,32 +130,32 @@ function formatSize(data, type, row)
           <tr>
             <td>
       		<c:choose>
-      			<c:when test="${temp.getIsfolder()}">
-      				<a href="browse?fileCode=${temp.getCode()}"><c:out value="${temp.getName()}~${temp.getCode()}~"></c:out></a>
+      			<c:when test="${temp.isfolder}">
+      				<a href="browse?fileCode=${temp.code}"><c:out value="${temp.name}~${temp.code}~"></c:out></a>
       			</c:when>
-      			<c:when test="${temp.getSize() eq -1}">
-    				<c:out value="${temp.getName()}~${temp.getCode()}~"/>
+      			<c:when test="${temp.size eq -1}">
+    				<c:out value="${temp.name}~${temp.code}~"/>
   				</c:when>
       			<c:otherwise>
-      				<a href="download?fileCode=${temp.getCode()}&name=${temp.getName()}&parentCode=${parentCode}"><c:out value="${temp.getName()}~${temp.getCode()}~"/></a>
+      				<a href="download?fileCode=${temp.code}&name=${temp.name}&parentCode=${parentCode}"><c:out value="${temp.name}~${temp.code}~"/></a>
       			</c:otherwise>
       		</c:choose>
       		  </td>
       		  <td>
       		<c:choose>
-      			<c:when test="${temp.getIsfolder()}">
+      			<c:when test="${temp.isfolder}">
       				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
       			</c:when>
-      			<c:when test="${temp.getSize() eq -1}">
+      			<c:when test="${temp.size eq -1}">
     				<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
   				</c:when>
       			<c:otherwise>
-      				<c:out value="${temp.getSize()}"/>
+      				<c:out value="${temp.size}"/>
       			</c:otherwise>
       		</c:choose>
             </td>
-      		  <td><c:out value="${temp.getCreate_time()}"/></td>
-      		  <td><c:out value="${temp.getUpdate_time()}"/></td>
+      		  <td><c:out value="${temp.create_time}"/></td>
+      		  <td><c:out value="${temp.update_time}"/></td>
       		</tr>
       	</c:forEach>
       	
