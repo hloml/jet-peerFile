@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,18 +51,17 @@ public class LoginServiceImp implements LoginService {
 		try {
 			if (session.getAttribute(code) == null) {
 				sessionCode = client.getLogin(username, password);
-				if (sessionCode.equals(null) || sessionCode.equals("")) {
-					ArrayList<String> errors = new ArrayList<String>();
-					errors.add("Username or password is wrong, please try it again.");
-					model.addAttribute(error, errors);
-					logger.error("Wrong username or password: " + username);
-					return "index";
-				}
 				logger.info("User " + username + " logged in - " + sessionCode);
 				session.setAttribute("code", sessionCode);
 			}
 
-		} catch (RemoteException e) {
+		}  catch (AxisFault e) {
+			ArrayList<String> errors = LoginServiceValidations.validateLoginService(e, username);
+			model.addAttribute(error, errors);
+			return "index";			
+			
+		}	catch (RemoteException e) {
+			
 			ArrayList<String> errors = LoginServiceValidations.validateLoginService(e);
 			model.addAttribute(error, errors);
 			return "index";

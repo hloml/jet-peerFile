@@ -39,7 +39,7 @@ public class IndexController {
 	 * @param model Model aplikace.
 	 * @return Adresa přesměrování.
 	 */
-	@RequestMapping("/*")
+	@RequestMapping("/")
 	public String home(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
 			return "index";
@@ -121,8 +121,7 @@ public class IndexController {
 		ArrayList<String> errors = FileServiceValidations.validateBrowse(fileCode);
 		if (errors.size() != 0) {
 			session.setAttribute(error, errors);
-			redirect(response, "index");
-			return "";
+			return "redirect:index";
 		}
 
 		return fs.browse(session, model, response, fileCode, errors);
@@ -149,13 +148,14 @@ public class IndexController {
 		String url = isLogged(session, model);
 		if (!url.isEmpty()) {
 			redirect(response, url);
+			return;
 		}
 
 		ArrayList<String> errors = FileServiceValidations.validateDownload(fileCode, fileName);
 		if (errors.size() != 0) {
 			session.setAttribute(error, errors);
 			redirect(response, "index");
-			return;
+			return ;
 		}
 
 		fs.download(session, model, request, response, fileCode, fileName, parentCode, errors);
