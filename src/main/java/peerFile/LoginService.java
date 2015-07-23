@@ -30,5 +30,5 @@ public interface LoginService {
 	 * @param password Uživatelské heslo.
 	 * @return Adresa přesměrování.
 	 */
-	public String login(HttpSession session, Model model, String username, String password);
+	public String login(HttpSession session, Model model, String username, String password, String server);
 }

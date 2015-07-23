@@ -3,10 +3,18 @@ package peerFile;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import configuration.Server;
+import configuration.Servers;
 import peerFile.wsdl.ServiceStub;
 import peerFile.wsdl.ServiceStub.Browse;
 import peerFile.wsdl.ServiceStub.BrowseResponse;
@@ -29,12 +37,17 @@ import peerFile.wsdl.ServiceStub.Get_contentResponse;
  * @author 
  *
  */
+/**
+ * @author user
+ *
+ */
 @Service
 public class ServiceClientImp implements ServiceClient {
 
 	private final static Logger logger = Logger.getLogger(ServiceClientImp.class);
 	
-	ServiceStub service = null;
+	// Seznam instancí serverů, které jsou k dispozici
+	private Servers serversMap;
 
 	/**
 	 * Konstruktor.
@@ -52,9 +65,35 @@ public class ServiceClientImp implements ServiceClient {
 	 * @see peerFile.ServiceClient#getService()
 	 */
 	public void getService() throws AxisFault {
-		service = new ServiceStub();
-
+	//	service = new ServiceStub();
+			
+		ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");		 
+    	serversMap = (Servers)context.getBean("CustomerBean");
+		
 	}
+	
+	
+	public Servers getServers() {
+		return serversMap;
+	}
+	
+	
+	/** Vytvoření klienta pro služby pro server zvoleny uzivatelem (ulozen v session pod server)
+	 * @return
+	 * @throws AxisFault
+	 */
+	private ServiceStub getClient() throws AxisFault {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		HttpSession session =   attr.getRequest().getSession(true); 
+		String server = session.getAttribute("server").toString();
+		
+		Server s = (Server) getServers().getMaps().get(server);
+		
+		ServiceStub service = new ServiceStub(s.getAddress());
+		return service;
+	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see peerFile.ServiceClient#logout(java.lang.String)
@@ -62,6 +101,7 @@ public class ServiceClientImp implements ServiceClient {
 	public String logout(String code) throws RemoteException {
 		Logout logout = new Logout();
 		logout.setSession_code(code);
+		ServiceStub service = getClient();
 		LogoutResponse response = service.logout(logout);
 		String success = response.getSuccess();
 
@@ -79,6 +119,7 @@ public class ServiceClientImp implements ServiceClient {
 		login.setUser_name(userName);
 		login.setPassword(password);
 
+		ServiceStub service = getClient();
 		LoginResponse response = service.login(login);
 		code = response.getSession_code();
 		return code;
@@ -93,6 +134,8 @@ public class ServiceClientImp implements ServiceClient {
 		browse.setSession_code(code);
 		browse.setParent_code(fileCode);
 		BrowseResponse res = new BrowseResponse();
+		
+		ServiceStub service = getClient();
 		res = service.browse(browse);
 
 		Entities ent = res.getEntities();
@@ -109,6 +152,8 @@ public class ServiceClientImp implements ServiceClient {
 		Get_home_folder h = new Get_home_folder();
 		h.setSession_code(code);
 		Get_home_folderResponse response = null;
+		
+		ServiceStub service = getClient();
 		response = service.get_home_folder(h);
 
 		return response.getFolder_code();
@@ -121,6 +166,8 @@ public class ServiceClientImp implements ServiceClient {
 		Get_full_path_from_root fullPath = new Get_full_path_from_root();
 		fullPath.setCode(fileCode);
 		fullPath.setSession_code(code);
+		
+		ServiceStub service = getClient();
 		Get_full_path_from_rootResponse response = service
 				.get_full_path_from_root(fullPath);
 		path = response.getPath();
@@ -156,6 +203,8 @@ public class ServiceClientImp implements ServiceClient {
 		content.setCode(fileCode);
 
 		Get_contentResponse response = null;
+		
+		ServiceStub service = getClient();
 		response = service.get_content(content);
 		return response;
 	}

@@ -46,13 +46,15 @@ public class LoginServiceImp implements LoginService {
 	/* (non-Javadoc)
 	 * @see peerFile.LoginService#login(javax.servlet.http.HttpSession, org.springframework.ui.Model, java.lang.String, java.lang.String)
 	 */
-	public String login(HttpSession session, Model model, String username, String password) {
+	public String login(HttpSession session, Model model, String username, String password, String server) {
 		String sessionCode = "";
 		try {
 			if (session.getAttribute(code) == null) {
+				session.setAttribute("server", server);
 				sessionCode = client.getLogin(username, password);
 				logger.info("User " + username + " logged in - " + sessionCode);
 				session.setAttribute("code", sessionCode);
+				
 			}
 
 		}  catch (AxisFault e) {

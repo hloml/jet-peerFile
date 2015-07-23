@@ -29,6 +29,9 @@ public class IndexController {
 	@Autowired
 	private LoginService ls;
 
+	@Autowired
+	private ServiceClient client;
+	
 	private final String error = "errorMessage";
 	private final static Logger logger = Logger.getLogger(IndexController.class);
 
@@ -78,9 +81,10 @@ public class IndexController {
 	@RequestMapping("/login")
 	String login(@RequestParam(value = "username", required = false) String username,
 			@RequestParam(value = "password", required = false) String password,
+			@RequestParam(value = "server", required = false) String server,
 			HttpSession session, Model model) {
-
-		return ls.login(session, model, username, password);
+		
+		return ls.login(session, model, username, password, server);
 	}
 
 	/**
@@ -173,6 +177,7 @@ public class IndexController {
 			ArrayList<String> errors = new ArrayList<String>();
 			errors.add("Access denied. Please log in.");
 			model.addAttribute("errorMessage", errors);
+			model.addAttribute("serversList", client.getServers().getMaps());		
 			return "index";
 		}
 		return "";

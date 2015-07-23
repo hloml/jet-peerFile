@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.axis2.AxisFault;
 
+import configuration.Servers;
 import peerFile.wsdl.ServiceStub.Entity;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
 
@@ -22,6 +23,13 @@ public interface ServiceClient {
 	 * @throws AxisFault
 	 */
 	public void getService() throws AxisFault;
+	
+	
+	/** Získání všech dostupných instancí serverů, na které se může uživatel připojit
+	 * @return
+	 */
+	public Servers getServers();
+	
 	
 	/**
 	 * Odhlášení uživatele.

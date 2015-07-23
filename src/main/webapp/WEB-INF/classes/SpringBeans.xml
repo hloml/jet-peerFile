@@ -1,0 +1,30 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="CustomerBean" class="configuration.Servers">
+
+		<!-- java.util.Map -->
+		<property name="maps">
+			<map>
+				<entry key="instance1">
+					<bean class="configuration.Server">
+						<property name="code" value="instance1" />
+						<property name="address" value="http://peerfile.eu:4000/soap/action" />
+						<property name="description" value="popis serfveru" />
+						<property name="port" value="4000" />					
+					</bean>
+				</entry>			
+				<entry key="instance2">
+					<bean class="configuration.Server">
+						<property name="code" value="instance2" />
+						<property name="address" value="http://peerfiless.eu:4000/soap/action" />
+						<property name="description" value="popis serfveru 12" />
+						<property name="port" value="4000" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>	
+</beans>

@@ -55,6 +55,16 @@
         <label for="password" class="sr-only">Password
         </label>
         <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>  
+        
+		<select name="server">
+    		<c:forEach items="${serversList}" var="server">
+        		<option value="${server.key}">${server.key}</option>
+    		</c:forEach>
+		</select>
+
+        
+       
+        
         <!--
         <div class="checkbox">
           <label>
