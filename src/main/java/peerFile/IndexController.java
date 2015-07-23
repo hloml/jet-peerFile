@@ -42,9 +42,10 @@ public class IndexController {
 	 * @param model Model aplikace.
 	 * @return Adresa přesměrování.
 	 */
-	@RequestMapping("/")
+	@RequestMapping("/home")
 	public String home(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
+			model.addAttribute("serversList", client.getServers().getMaps());	
 			return "index";
 		}
 		else {
@@ -52,6 +53,20 @@ public class IndexController {
 		}
 	}
 
+
+	@RequestMapping("/")
+	public String hom(HttpSession session, Model model) {
+		if (session.getAttribute("code") == null) {
+			model.addAttribute("serversList", client.getServers().getMaps());	
+			return "index";
+		}
+		else {
+			return "redirect:index";
+		}
+	}
+
+	
+	
 	/**
 	 * Odhlášení uživatele.
 	 * 
@@ -162,7 +177,10 @@ public class IndexController {
 			return ;
 		}
 
-		fs.download(session, model, request, response, fileCode, fileName, parentCode, errors);
+		url = fs.download(session, model, request, response, fileCode, fileName, parentCode, errors);
+		if (!url.isEmpty()) {
+			redirect(response, url);
+		}
 	}
 
 	/**
@@ -176,9 +194,8 @@ public class IndexController {
 		if (session.getAttribute("code") == null) {
 			ArrayList<String> errors = new ArrayList<String>();
 			errors.add("Access denied. Please log in.");
-			model.addAttribute("errorMessage", errors);
-			model.addAttribute("serversList", client.getServers().getMaps());		
-			return "index";
+			model.addAttribute("errorMessage", errors);	
+			return "forward:home";
 		}
 		return "";
 	}

@@ -40,7 +40,7 @@ public class LoginServiceImp implements LoginService {
 			ArrayList<String> errors = LoginServiceValidations.validateLogoutService(e);
 			model.addAttribute(error, errors);
 		}
-		return "index";
+		return "forward:home";
 	}
 
 	/* (non-Javadoc)
@@ -60,13 +60,13 @@ public class LoginServiceImp implements LoginService {
 		}  catch (AxisFault e) {
 			ArrayList<String> errors = LoginServiceValidations.validateLoginService(e, username);
 			model.addAttribute(error, errors);
-			return "index";			
+			return "forward:home";			
 			
 		}	catch (RemoteException e) {
 			
 			ArrayList<String> errors = LoginServiceValidations.validateLoginService(e);
 			model.addAttribute(error, errors);
-			return "index";
+			return "forward:home";
 		}
 
 		return "redirect:/index";

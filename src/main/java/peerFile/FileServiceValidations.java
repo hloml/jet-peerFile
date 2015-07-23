@@ -43,27 +43,28 @@ public class FileServiceValidations {
 	 * @param path Cesta v souborovém systému.
 	 * @return Seznam chyb.
 	 */
-	public static ArrayList<String> validateBrowseService(RemoteException e,  HttpServletResponse response,ArrayList<PathItem> path ) {
+	public static ValidationsContainer validateBrowseService(RemoteException e,  HttpServletResponse response,ArrayList<PathItem> path ) {
 		ArrayList<String> errors = new ArrayList<String>();
-
+		String url = "";
+		
 		if (e.getLocalizedMessage().toLowerCase().contains("insufficient rights")) {
 			errors.add("You don't have permission to access this folder.");
 			logger.error("Not enought permission");
 			if (path != null && path.size() - 2 >= 0) {
-				redirect(response, "/browse?fileCode=" + path.get(path.size() - 2).getFileCode());
+				url = "redirect:/browse?fileCode=" + path.get(path.size() - 2).getFileCode();
 			} else {
-				redirect(response, "/index");
+				url = "redirect:/index";
 			}
 		} else if (e.getLocalizedMessage().toLowerCase().contains("folder not found")) {
 			errors.add("Folder not found");
 			logger.error("Folder not found");
-			redirect(response, "/index");
+			url = "redirect:/index";
 		} else {
 			errors.add("Remote service can not be reached.");
 			logger.error("Remote service can not be reached.");
-			redirect(response, "/index");
+			url = "redirect:/index";
 		}
-		return errors;
+		return new ValidationsContainer(errors, url);
 	}
 
 	/**
@@ -96,9 +97,10 @@ public class FileServiceValidations {
 	 * @param parentCode Kód nadřazeného souboru/složky.
 	 * @return Seznam chyb.
 	 */
-	public static ArrayList<String> validateDownloadService(RemoteException e,  HttpServletResponse response, String parentCode ) {
+	public static ValidationsContainer validateDownloadService(RemoteException e,  HttpServletResponse response, String parentCode ) {
 		ArrayList<String> errors = new ArrayList<String>();
-
+		String url = "";
+		
 		if (e.getLocalizedMessage().toLowerCase().contains("entity has no content")) {
 			errors.add("File does not have content.");
 			logger.error("File does not have content.");
@@ -106,8 +108,9 @@ public class FileServiceValidations {
 			errors.add("Remote service can not be reached.");
 			logger.error("Remote service can not be reached.");
 		}
-		redirect(response, "/browse?fileCode=" + parentCode);
-		return errors;
+		
+		url = "/browse?fileCode=" + parentCode;
+		return new ValidationsContainer(errors, url);
 	}
 	
 	/**
@@ -122,20 +125,5 @@ public class FileServiceValidations {
 		logger.error("Remote service can not be reached.");
 		return errors;
 	}
-		
-	
-	/**
-	 * Zachycuje chybu při přesměrování.
-	 * 
-	 * @param response Http odpověď.
-	 * @param address Adresa přesměrování.
-	 */
-	private static void redirect(HttpServletResponse response, String address) {
-		try {
-			response.sendRedirect(address);
-		} catch (IOException e) {
-			logger.error(e);
-		}
-	}
-	
+			
 }

@@ -72,9 +72,10 @@ public class FileServiceImp implements FileService {
 				session.removeAttribute(error);
 			}
 		} catch (RemoteException e) {
-			errors = FileServiceValidations.validateBrowseService(e, response, path);
-			session.setAttribute(error, errors);
-			return "";
+			
+			ValidationsContainer valContainer = FileServiceValidations.validateBrowseService(e, response, path);
+			session.setAttribute(error, valContainer.getErrors());
+			return valContainer.getUrl();
 		}
 		return "mainPage";
 	}
@@ -82,7 +83,7 @@ public class FileServiceImp implements FileService {
 	/* (non-Javadoc)
 	 * @see peerFile.FileService#download(javax.servlet.http.HttpSession, org.springframework.ui.Model, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String, java.lang.String, java.lang.String, java.util.ArrayList)
 	 */
-	public void download(HttpSession session, Model model, HttpServletRequest request,
+	public String download(HttpSession session, Model model, HttpServletRequest request,
 			HttpServletResponse response, String fileCode, String fileName, String parentCode,
 			ArrayList<String> errors) {
 		Get_contentResponse file;
@@ -101,11 +102,15 @@ public class FileServiceImp implements FileService {
 			
 			logger.info("File " + fileName + " was downloaded");
 		} catch (RemoteException e1) {
-			errors = FileServiceValidations.validateDownloadService(e1, response, parentCode);
-			session.setAttribute(error, errors);
+			
+			ValidationsContainer valContainer = FileServiceValidations.validateDownloadService(e1, response, parentCode);
+			session.setAttribute(error, valContainer.getErrors());		
+			return valContainer.getUrl();
+		
 		} catch (IOException e) {
 			logger.error(e);
 		}
+		return "";
 	}
 
 }

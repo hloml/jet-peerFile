@@ -49,5 +49,5 @@ public interface FileService {
 	 * @param parentCode Kód nadřazeného souboru/složky.
 	 * @param errors Seznam chyb.
 	 */
-	public void download(HttpSession session, Model model, HttpServletRequest request, HttpServletResponse response, String fileCode, String fileName, String parentCode, ArrayList<String> errors);
+	public String download(HttpSession session, Model model, HttpServletRequest request, HttpServletResponse response, String fileCode, String fileName, String parentCode, ArrayList<String> errors);
 }

@@ -67,8 +67,8 @@ public class ServiceClientImp implements ServiceClient {
 	public void getService() throws AxisFault {
 	//	service = new ServiceStub();
 			
-		ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");		 
-    	serversMap = (Servers)context.getBean("CustomerBean");
+		ApplicationContext context = new ClassPathXmlApplicationContext("ServerConfBean.xml");		 
+    	serversMap = (Servers)context.getBean("ServerBean");
 		
 	}
 	

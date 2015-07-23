@@ -48,21 +48,23 @@
       	</div>
       </c:if>
         <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="username" class="sr-only">Username
+        <label for="username">Username
         </label>
         <input type="text" id="username" name="username" class="form-control"placeholder="Username" required autofocus>
         
-        <label for="password" class="sr-only">Password
+        <label for="password">Password
         </label>
         <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>  
         
-		<select name="server">
+        <label for="server" >Server
+        </label>
+		<select name="server" class="form-control">
     		<c:forEach items="${serversList}" var="server">
         		<option value="${server.key}">${server.key}</option>
     		</c:forEach>
 		</select>
 
-        
+        <br>
        
         
         <!--
