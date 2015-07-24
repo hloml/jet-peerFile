@@ -60,7 +60,7 @@
         </label>
 		<select name="server" class="form-control">
     		<c:forEach items="${serversList}" var="server">
-        		<option value="${server.key}">${server.key}</option>
+        		<option value="${server.key}" ${server.key == chosenServer ? 'selected' : ''}>${server.key}</option>
     		</c:forEach>
 		</select>
 

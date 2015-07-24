@@ -37,8 +37,16 @@ public class LoginServiceValidations {
 	 */
 	public static ArrayList<String> validateLoginService(AxisFault e, String username ) {
 		ArrayList<String> errors = new ArrayList<String>();
-		errors.add("Username or password is wrong, please try it again.");
-		logger.error("Wrong username or password: " + username);
+		
+		if (e.getLocalizedMessage().toLowerCase().contains("bad user/password.")) {	
+			errors.add("Username or password is wrong, please try it again.");
+			logger.error("Wrong username or password: " + username);
+		}
+		else {
+			errors.add("Service can not be reached");
+			logger.error("Service can not be reached for user " + username + " on server " + e.getLocalizedMessage());
+		}
+		
 		return errors;
 	}
 	

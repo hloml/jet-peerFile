@@ -52,9 +52,18 @@ public class LoginServiceImp implements LoginService {
 			if (session.getAttribute(code) == null) {
 				session.setAttribute("server", server);
 				sessionCode = client.getLogin(username, password);
-				logger.info("User " + username + " logged in - " + sessionCode);
-				session.setAttribute("code", sessionCode);
+						
+				if (!sessionCode.isEmpty()) {		// when user put wrong password, server return empty code 
+					session.setAttribute("code", sessionCode);
+				} else {				
+					ArrayList<String> errors = new ArrayList<String>();
+					errors.add("Username or password is wrong, please try it again.");
+					model.addAttribute(error, errors);
+					logger.error("Wrong username or password: " + username);
+					return "forward:home";	
+				}				
 				
+				logger.info("User " + username + " logged in - " + sessionCode);				
 			}
 
 		}  catch (AxisFault e) {
@@ -63,7 +72,6 @@ public class LoginServiceImp implements LoginService {
 			return "forward:home";			
 			
 		}	catch (RemoteException e) {
-			
 			ArrayList<String> errors = LoginServiceValidations.validateLoginService(e);
 			model.addAttribute(error, errors);
 			return "forward:home";

@@ -45,7 +45,8 @@ public class IndexController {
 	@RequestMapping("/home")
 	public String home(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
-			model.addAttribute("serversList", client.getServers().getMaps());	
+			model.addAttribute("serversList", client.getServers().getMaps());
+			model.addAttribute("chosenServer", session.getAttribute("server"));		// chosen server from user 
 			return "index";
 		}
 		else {
