@@ -85,12 +85,16 @@ public class ServiceClientImp implements ServiceClient {
 	private ServiceStub getClient() throws AxisFault {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpSession session =   attr.getRequest().getSession(true); 
-		String server = session.getAttribute("server").toString();
 		
-		Server s = (Server) getServers().getMaps().get(server);
-		
-		ServiceStub service = new ServiceStub(s.getAddress());
-		return service;
+		if (session.getAttribute("server") != null) {
+			String server = session.getAttribute("server").toString();	
+			Server s = (Server) getServers().getMaps().get(server);	
+			ServiceStub service = new ServiceStub(s.getAddress());
+			return service;
+		} 
+		else {
+			throw new AxisFault("Service stub initialization failed");
+		}	
 	}
 	
 	

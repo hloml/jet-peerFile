@@ -42,6 +42,10 @@ public class LoginServiceValidations {
 			errors.add("Username or password is wrong, please try it again.");
 			logger.error("Wrong username or password: " + username);
 		}
+		else if (e.getLocalizedMessage().toLowerCase().contains("service stub initialization failed")){
+			errors.add("Service can not be reached");
+			logger.error("Service can not be reached for user " + username + " because " + e.getLocalizedMessage());
+		}		
 		else {
 			errors.add("Service can not be reached");
 			logger.error("Service can not be reached for user " + username + " on server " + e.getLocalizedMessage());
