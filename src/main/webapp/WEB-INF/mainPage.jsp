@@ -74,9 +74,12 @@ function formatSize(data, type, row)
             <span class="icon-bar">
             </span>
           </button>
-          <a class="navbar-brand" href="#">PeerFile</a>
+          <a class="navbar-brand" href="home">PeerFile</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="monitoring"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
+          </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>
             <a href="logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a>

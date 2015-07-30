@@ -1,6 +1,5 @@
 package configuration;
 
-
 public class Server {
 
 	String code;
@@ -33,6 +32,5 @@ public class Server {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
 
 }

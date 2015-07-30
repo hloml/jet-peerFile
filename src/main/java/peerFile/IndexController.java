@@ -1,6 +1,5 @@
 package peerFile;
 
-import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,6 +30,9 @@ public class IndexController {
 
 	@Autowired
 	private ServiceClient client;
+	
+	@Autowired
+	private MonitoringService ms;
 	
 	private final String error = "errorMessage";
 	private final static Logger logger = Logger.getLogger(IndexController.class);
@@ -182,6 +184,24 @@ public class IndexController {
 		if (!url.isEmpty()) {
 			redirect(response, url);
 		}
+	}
+	
+
+	@RequestMapping("/monitoring")
+	public String monitoring(@RequestParam(value = "serverKey", required = false) String serverKey,
+			HttpSession session, Model model) {
+		
+		if(!model.containsAttribute("serversList")){
+			model.addAttribute("serversList", client.getServers().getMaps());
+			model.addAttribute("chosenServer", session.getAttribute("server"));		// chosen server from user
+		}
+		String url = isLogged(session, model);
+		if (url.isEmpty()){
+			model.addAttribute("isLogged", true);
+		} else {
+			model.addAttribute("isLogged", false);
+		}
+		return ms.monitor(session, model, serverKey, client.getServers().getMaps());
 	}
 
 	/**

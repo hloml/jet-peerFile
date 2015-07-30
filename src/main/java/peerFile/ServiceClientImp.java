@@ -27,6 +27,7 @@ import peerFile.wsdl.ServiceStub.Login;
 import peerFile.wsdl.ServiceStub.LoginResponse;
 import peerFile.wsdl.ServiceStub.Logout;
 import peerFile.wsdl.ServiceStub.LogoutResponse;
+import tools.Formatter;
 import peerFile.wsdl.ServiceStub.Get_full_path_from_root;
 import peerFile.wsdl.ServiceStub.Get_content;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
@@ -89,7 +90,7 @@ public class ServiceClientImp implements ServiceClient {
 		if (session.getAttribute("server") != null) {
 			String server = session.getAttribute("server").toString();	
 			Server s = (Server) getServers().getMaps().get(server);	
-			ServiceStub service = new ServiceStub(s.getAddress());
+			ServiceStub service = new ServiceStub(Formatter.getSoapUrl(s.getAddress(), s.getPort()));
 			return service;
 		} 
 		else {
