@@ -32,6 +32,22 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 						<property name="port" value="4000" />
 					</bean>
 				</entry>
+				<entry key="instanceTest1">
+					<bean class="configuration.Server">
+						<property name="code" value="instanceTest1" />
+						<property name="address" value="http://192.168.146.39" />
+						<property name="description" value="Testovaci verze PeerFile" />
+						<property name="port" value="3000" />
+					</bean>
+				</entry>
+				<entry key="instanceTest2">
+					<bean class="configuration.Server">
+						<property name="code" value="instanceTest2" />
+						<property name="address" value="http://192.168.146.39" />
+						<property name="description" value="Testovaci verze PeerFile" />
+						<property name="port" value="3001" />
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>	
