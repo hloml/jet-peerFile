@@ -173,15 +173,16 @@ public class JsonMonitoring {
 
 	/**
 	 * 
-	 * @return memory info - [0]: total memory, [1]: free memory
+	 * @return memory info - [0]: total memory, [1]: free memory, [2]: used memory
 	 */
 	public Long[] getMemory_info() {
 		if(memory_info == null){
 			try {
 				JsonObject jo = getJsonElement(MEMORY_INFO).getAsJsonObject();
-				memory_info = new Long[2];
+				memory_info = new Long[3];
 				memory_info[0] = jo.get(MEMORY_TOTAL).getAsLong();
 				memory_info[1] = jo.get(MEMORY_FREE).getAsLong();
+				memory_info[2] = memory_info[0] - memory_info[1];
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -205,6 +206,7 @@ public class JsonMonitoring {
 					disk_space[i].setDriveName(jsonElement.getAsJsonObject().get(DISK_NAME).getAsString());
 					disk_space[i].setTotalSpace(jsonElement.getAsJsonObject().get(DISK_TOTAL).getAsLong());
 					disk_space[i].setFreeSpace(jsonElement.getAsJsonObject().get(DISK_FREE).getAsLong());
+					disk_space[i].setUsedSpace(disk_space[i].getTotalSpace() - disk_space[i].getFreeSpace());
 					i++;
 				}
 			} catch (IOException e) {

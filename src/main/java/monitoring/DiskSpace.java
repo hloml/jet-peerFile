@@ -10,6 +10,7 @@ public class DiskSpace {
 	private String driveName;
 	private Long totalSpace;
 	private Long freeSpace;
+	private Long usedSpace;
 	
 	public String getDriveName() {
 		return driveName;
@@ -29,6 +30,13 @@ public class DiskSpace {
 	public void setFreeSpace(Long freeSpace) {
 		this.freeSpace = freeSpace;
 	}
+	public Long getUsedSpace() {
+		return usedSpace;
+	}
+	public void setUsedSpace(Long usedSpace) {
+		this.usedSpace = usedSpace;
+	}
+	
 	
 	
 }

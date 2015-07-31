@@ -38,6 +38,15 @@ public class Formatter {
 	    DecimalFormat decimalFormat = new DecimalFormat(decimalPattern);
 		return decimalFormat.format(bytesD) + " " + fileSizeUnits[index];
 	}
+
+	/**
+	 * Převede velikost v KiloByte na jednotky.
+	 * @param kbytes velikost v KiloByte
+	 * @return velikost s jednotkami
+	 */
+	public static String convertKiloBytes(long kbytes){
+		return convertBytes(kbytes * 1024);
+	}
 	
 	/**
 	 * Převede čistý text na html

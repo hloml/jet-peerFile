@@ -72,6 +72,9 @@
         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseInstances" aria-expanded="true" aria-controls="collapseInstances">
           Instances
         </a>
+        <c:if test="${serverMonitor != null}">
+        -- <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <strong>${choosenServer.getCode()}</strong>
+        </c:if>
       </h4>
     </div>
     <div id="collapseInstances" class="panel-collapse collapse<c:if test="${serverMonitor == null}"> in</c:if>" role="tabpanel" aria-labelledby="headingInstances">
@@ -121,6 +124,8 @@
 
 
 <c:if test="${serverMonitor != null}">
+<c:choose>
+<c:when test="${serverMonitor.getInstance_id() != null}">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingMonitor">
       <h4 class="panel-title">
@@ -292,8 +297,8 @@
           
 	    <h5>Memory usage</h5>
 	      <div class="progress">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${serverMonitor.getMemory_info()[1]/serverMonitor.getMemory_info()[0]}" />;">
-              <span>${Formatter.convertBytes(serverMonitor.getMemory_info()[1])} / ${Formatter.convertBytes(serverMonitor.getMemory_info()[0])}</span>
+            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${serverMonitor.getMemory_info()[2]/serverMonitor.getMemory_info()[0]}" />;">
+              <span>${Formatter.convertKiloBytes(serverMonitor.getMemory_info()[2])} / ${Formatter.convertKiloBytes(serverMonitor.getMemory_info()[0])}</span>
               
             </div>
           </div>
@@ -304,14 +309,16 @@
 		  <c:forEach var="diskSpace" items="${serverMonitor.getDisk_space()}">
 	    <h5><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> ${diskSpace.getDriveName()}</h5>
 	      <div class="progress">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${diskSpace.getFreeSpace()/diskSpace.getTotalSpace()}" />;">
-              <span>${Formatter.convertBytes(diskSpace.getFreeSpace())} / ${Formatter.convertBytes(diskSpace.getTotalSpace())}</span>
+            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${diskSpace.getUsedSpace()/diskSpace.getTotalSpace()}" />;">
+              <span>${Formatter.convertKiloBytes(diskSpace.getUsedSpace())} / ${Formatter.convertKiloBytes(diskSpace.getTotalSpace())}</span>
               
             </div>
           </div>
 		</c:forEach>
 		
-          
+          <button type="button" class="btn btn-default" onClick="window.location.reload()">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          </button>
           
 	    </div>
 	    
@@ -402,6 +409,13 @@
 	  </div>
     </div>
   </div>
+</c:when>
+<c:otherwise>
+  <div class="alert alert-danger" role="alert" style="margin-top:20px;">
+    <strong>Error:</strong> Monitoring instance <strong><i>${choosenServer.getCode()}</i></strong> is not available.
+  </div>
+</c:otherwise>
+</c:choose>
 </c:if>
 </div>
 	  
