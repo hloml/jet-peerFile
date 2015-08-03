@@ -136,6 +136,7 @@
 	</dependencies>
 
 	<build>
+		 <finalName>PeerFileMon</finalName>
 		<resources>
 			<resource>
 				<directory>${project.build.directory}/generated-sources/axis2/wsdl2code/resources</directory>
