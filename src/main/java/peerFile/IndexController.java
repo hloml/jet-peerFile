@@ -57,7 +57,7 @@ public class IndexController {
 	}
 
 
-	@RequestMapping("/")
+	/*@RequestMapping("/")
 	public String hom(HttpSession session, Model model) {
 		if (session.getAttribute("code") == null) {
 			model.addAttribute("serversList", client.getServers().getMaps());	
@@ -66,7 +66,7 @@ public class IndexController {
 		else {
 			return "redirect:index";
 		}
-	}
+	}*/
 
 	
 	
