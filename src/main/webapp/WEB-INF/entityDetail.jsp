@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+ <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
@@ -26,38 +27,9 @@
     <!-- DataTables -->
     <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.dataTables.min.js"></script>
     <!-- Initialization -->
-<script type="text/javascript" class="init">
-$(document).ready( function () {
-  var table = $('#files').DataTable(
-    { "columns" : [
-      {    },
-      {    "render": formatSize },
-      {    },
-      {    }
-      ] 
-    }
-  );
-} );
-function formatSize(data, type, row)
-{
-  if (type == "sort" || type == 'type')
-    return data;
-  if(isNaN(data)){
-    return data;
-  } else {
-    num = data;
-    var i = 0;
-    var k = 1024;
-    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    while(num >= k && i < sizes.length) {
-      num = (num / k).toFixed(2);
-      i++;
-    }
-    return num + " " + sizes[i];
-  }
-}
+
 </script>
-    <title>PeerFile - File Explorer
+    <title>PeerFile - Entity detail
     </title>
   </head>
   <body style="padding-top: 60px;">
@@ -110,60 +82,63 @@ function formatSize(data, type, row)
 		    
 	  </span>
       </c:forEach>
-    
-      <hr style="margin-top: 6px; margin-bottom: 6px; padding-bottom: 6px;">
-      
-      <!-- Table -->
-      <table id="files" class="table">
-        <thead>
-          <tr>
-            <th>Name
-            </th>
-            <th>Size
-            </th>
-            <th>Created
-            </th>
-            <th>Updated
-            </th>
-          </tr>
-        </thead>
-        <tbody>
+     <hr style="margin-top: 6px; margin-bottom: 6px; padding-bottom: 6px;">
+
+     <form action="update_entity" method="post" class="form-vertical" role="form">
+		
+
+		<fieldset>
+    		<legend>Basic Information</legend>
+
+		
+		<c:forEach var="attr" items="${basic_attr}">
+	
+  			<div class="form-group">
+  			
+    			<label class="control-label col-sm-3" for="email">${attr.name}:</label>
+    			<div class="col-sm-3">
+      				<input type="${attr.data_type}" class="form-control" id="${attr.name}" value="${attr.value}"  
+      					<c:if  test="${attr.read_only}"> disabled </c:if>
+					>
+    			</div>
+  			</div>
+
+       </c:forEach>
+       
+       	</fieldset>
+       
+       
+       <c:if test="${fn:length(advance_attr) gt 0}">
+       	<fieldset>
+    	<legend>Advance Information</legend>
+
+		
+		<c:forEach var="attr" items="${advance_attr}">
+	
+  			<div class="form-group">
+  			
+    			<label class="control-label col-sm-3" for="email">${attr.name}:</label>
+    			<div class="col-sm-3">
+      				<input type="${attr.data_type}" class="form-control" id="${attr.name}" value="${attr.value}"  
+      					<c:if  test="${attr.read_only}"> disabled </c:if>
+					>
+    			</div>
+  			</div>
+
+       </c:forEach>
+      </fieldset>
+     </c:if>  
+       
+       
+     <br>
+        <button type="submit" class="btn btn-default btn-lg pull-right">Submit</button>
         
-        <c:forEach var="temp" items="${files}">
-          <tr>
-            <td>
-      		<c:choose>
-      			<c:when test="${temp.isfolder}">
-      				<a href="browse?fileCode=${temp.code}"><c:out value="${temp.name}~${temp.code}~"></c:out></a>
-      			</c:when>
-      			<c:when test="${temp.size eq -1}">
-    				<a href="entity_detail?fileCode=${temp.code}"><c:out value="${temp.name}~${temp.code}~"></c:out></a>
-  				</c:when>
-      			<c:otherwise>
-      				<a href="download?fileCode=${temp.code}&name=${temp.name}&parentCode=${parentCode}"><c:out value="${temp.name}~${temp.code}~"/></a>
-      			</c:otherwise>
-      		</c:choose>
-      		  </td>
-      		  <td>
-      		<c:choose>
-      			<c:when test="${temp.isfolder}">
-      				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-      			</c:when>
-      			<c:when test="${temp.size eq -1}">
-    				<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-  				</c:when>
-      			<c:otherwise>
-      				<c:out value="${temp.size}"/>
-      			</c:otherwise>
-      		</c:choose>
-            </td>
-      		  <td><c:out value="${temp.create_time}"/></td>
-      		  <td><c:out value="${temp.update_time}"/></td>
-      		</tr>
-      	</c:forEach>
-      	
-        </tbody>
-      </table>
+
+		
+    
+	</form>
+    
+    
     </div>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="res/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>

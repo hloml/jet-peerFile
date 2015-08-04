@@ -125,4 +125,38 @@ public class FileServiceValidations {
 		return errors;
 	}
 			
+	
+	
+	/**
+	 * Ověření parametru fileCode, který musí mít nějakou hodnotu.
+	 * 
+	 * @param fileCode Kód souboru/složky
+	 * @return Seznam chyb
+	 */
+	public static ArrayList<String> validateEntityDetail(String fileCode) {
+		ArrayList<String> errors = new ArrayList<String>();
+
+		if (fileCode == null) {
+			errors.add("Missing file code.");
+			logger.error("Missing file code.");
+		}
+		return errors;
+	}
+	
+	
+	
+	public static ValidationsContainer validateEntityDetailService(RemoteException e,  HttpServletResponse response,ArrayList<PathItem> path ) {
+		ArrayList<String> errors = new ArrayList<String>();
+		String url = "";
+		
+		if (e.getLocalizedMessage().toLowerCase().contains("not found.")) {
+			errors.add("Entity wasnt found.");
+			logger.error("Entity wasnt found " + e);
+			url = "redirect:/index";
+		} 
+		return new ValidationsContainer(errors, url);
+	}
+	
+	
+	
 }

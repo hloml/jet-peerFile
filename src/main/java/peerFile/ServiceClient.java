@@ -8,6 +8,7 @@ import org.apache.axis2.AxisFault;
 import configuration.Servers;
 import peerFile.wsdl.ServiceStub.Entity;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
+import peerFile.wsdl.ServiceStub.Get_entity_attributesResponse;
 
 /**
  * Rozhraní wsdl služeb. Metody sloužící ke komunikaci se servrem, který tyto služby poskytuje.
@@ -89,4 +90,8 @@ public interface ServiceClient {
 	 */
 	public Get_contentResponse getContent(String sessionCode, String fileCode) throws RemoteException; 
 
+	
+	
+	public Get_entity_attributesResponse getEntityAttributes(String code, String fileCode) throws RemoteException; 
+	
 }

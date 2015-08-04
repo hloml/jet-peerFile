@@ -20,6 +20,8 @@ import peerFile.wsdl.ServiceStub.Browse;
 import peerFile.wsdl.ServiceStub.BrowseResponse;
 import peerFile.wsdl.ServiceStub.Entities;
 import peerFile.wsdl.ServiceStub.Entity;
+import peerFile.wsdl.ServiceStub.Get_entity_attributes;
+import peerFile.wsdl.ServiceStub.Get_entity_attributesResponse;
 import peerFile.wsdl.ServiceStub.Get_full_path_from_rootResponse;
 import peerFile.wsdl.ServiceStub.Get_home_folder;
 import peerFile.wsdl.ServiceStub.Get_home_folderResponse;
@@ -213,4 +215,19 @@ public class ServiceClientImp implements ServiceClient {
 		response = service.get_content(content);
 		return response;
 	}
+	
+	
+	public Get_entity_attributesResponse getEntityAttributes(String code, String fileCode) throws RemoteException {
+		Get_entity_attributes request = new Get_entity_attributes();
+		request.setSession_code(code);
+		request.setCode(fileCode);
+		
+		Get_entity_attributesResponse response = null;
+		ServiceStub service = getClient();
+		response = service.get_entity_attributes(request);
+		return response;
+	}
+	
+	
+	
 }

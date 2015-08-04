@@ -3,19 +3,25 @@ package peerFile;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.axis2.client.Stub;
 import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import peerFile.wsdl.ServiceStub;
+import peerFile.wsdl.ServiceStub.Attribute;
 import peerFile.wsdl.ServiceStub.Entity;
 import peerFile.wsdl.ServiceStub.Get_contentResponse;
+import peerFile.wsdl.ServiceStub.Get_entity_attributesResponse;
 
 /**
  * Implementace jednotlivých souborových služeb.
@@ -112,5 +118,68 @@ public class FileServiceImp implements FileService {
 		}
 		return "";
 	}
+	
+	
 
+	public String entityDetail(HttpSession session, Model model, HttpServletResponse response,
+			String fileCode, ArrayList<String> errors) {
+
+		ArrayList<PathItem> path = null;
+
+		try {
+			path = client.getFullPath(session.getAttribute(code).toString(), fileCode);
+					
+			Get_entity_attributesResponse entity_attributes = client.getEntityAttributes(session.getAttribute(code).toString(), fileCode);
+			
+			model.addAttribute("entity_code", entity_attributes.getEntity_code());		
+			model.addAttribute("path", path);
+			model.addAttribute("parentCode", fileCode);
+			categorizeArrayAttributes(model, entity_attributes.getAttributes().getAttribute());
+			
+			if (session.getAttribute(error) != null) {
+				model.addAttribute(error, session.getAttribute(error));
+				session.removeAttribute(error);
+			}
+		} catch (RemoteException e) {
+			System.out.println(e);
+			ValidationsContainer valContainer = FileServiceValidations.validateEntityDetailService(e, response, path);
+			session.setAttribute(error, valContainer.getErrors());
+			return valContainer.getUrl();
+		}
+		return "entityDetail";
+	}
+	
+	
+	
+	/** Metoda seradi atributy entity podle jejich pozice z form_possition, dale je rozdeli do dvou poli dle atributu type
+	 * @param model
+	 * @param array
+	 */
+	private void categorizeArrayAttributes(Model model, Attribute[] array) {
+			
+		Arrays.sort(array, new Comparator<Attribute>() {
+		    @Override
+		    public int compare(Attribute o1, Attribute o2) {
+		        return ((Integer) o1.getForm_position()).compareTo(o2.getForm_position());
+		    }
+		});
+		
+		ArrayList<Attribute> basicAttr = new ArrayList<ServiceStub.Attribute>();
+		ArrayList<Attribute> advancedAttr = new ArrayList<ServiceStub.Attribute>();
+		
+		for (Attribute attribute : array) {
+			if (attribute.getType().equals("basic")) {
+				basicAttr.add(attribute);
+			}
+			else {
+				advancedAttr.add(attribute);
+			}
+		}
+		
+		model.addAttribute("advance_attr", advancedAttr);
+		model.addAttribute("basic_attr", basicAttr);
+	}
+	
+	
+	
 }

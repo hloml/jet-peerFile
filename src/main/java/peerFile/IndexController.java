@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
  * @author
  *
  */
+/**
+ * @author user
+ *
+ */
 @Controller
 @ComponentScan("peerFile")
 public class IndexController {
@@ -204,6 +208,36 @@ public class IndexController {
 		return ms.monitor(session, model, serverKey, client.getServers().getMaps());
 	}
 
+	
+	
+
+	/** Zobrazeni detailu entity
+	 * @param fileCode
+	 * @param session
+	 * @param model
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/entity_detail")
+	public String entity_detail(@RequestParam(value = "fileCode", required = false) String fileCode,
+			HttpSession session, Model model, HttpServletResponse response) {
+		
+		String url = isLogged(session, model);
+		if (!url.isEmpty()){
+			return url;
+		}
+
+		ArrayList<String> errors = FileServiceValidations.validateEntityDetail(fileCode);
+		if (errors.size() != 0) {
+			session.setAttribute(error, errors);
+			return "redirect:index";
+		}
+
+		return fs.entityDetail(session, model, response, fileCode, errors);
+	}
+
+	
+	
 	/**
 	 * Ověření, že je uživatel již přihlášený.
 	 * 

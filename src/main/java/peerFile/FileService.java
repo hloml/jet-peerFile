@@ -50,4 +50,19 @@ public interface FileService {
 	 * @param errors Seznam chyb.
 	 */
 	public String download(HttpSession session, Model model, HttpServletRequest request, HttpServletResponse response, String fileCode, String fileName, String parentCode, ArrayList<String> errors);
+
+
+
+	/**
+	 * Detail entity
+	 * 
+	 * @param session Aktuální session.
+	 * @param model Model aplikace.
+	 * @param response Http odpověď.
+	 * @param fileCode Kód souboru/složky.
+	 * @param errors Seznam chyb.
+	 * @return Adresa přesměrování.
+	 */
+	public String entityDetail(HttpSession session, Model model, HttpServletResponse response, String fileCode, ArrayList<String> errors);
+
 }
