@@ -28,38 +28,14 @@
     <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.dataTables.min.js"></script>
     <!-- Initialization -->
 
-</script>
+
     <title>PeerFile - Entity detail
     </title>
   </head>
   <body style="padding-top: 60px;">
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">      
-            <span class="sr-only">Toggle navigation
-            </span>
-            <span class="icon-bar">
-            </span>
-            <span class="icon-bar">
-            </span>
-            <span class="icon-bar">
-            </span>
-          </button>
-          <a class="navbar-brand" href="home">PeerFile</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="monitoring"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li>
-            <a href="logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+   
+   <jsp:include page="navigation.jsp"/>
+   
     <div class="container">
           <c:if  test="${not empty errorMessage}">
       	<div class="alert alert-danger" role="alert">

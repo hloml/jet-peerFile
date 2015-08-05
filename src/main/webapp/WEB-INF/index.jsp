@@ -27,20 +27,9 @@
     </title>
   </head>
   <body style="padding-top: 60px;">
-    <div class="container">
-      <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="home">PeerFile</a>
-          </div>
-          <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li><a href="monitoring"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
+    
+    <jsp:include page="navigation.jsp"/>
+    
     <div class="container">
       <form action="login" method="post" class="form-signin">
       

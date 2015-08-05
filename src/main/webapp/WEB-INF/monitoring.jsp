@@ -33,35 +33,9 @@
     </title>
   </head>
   <body style="padding-top: 80px;">
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">      
-            <span class="sr-only">Toggle navigation
-            </span>
-            <span class="icon-bar">
-            </span>
-            <span class="icon-bar">
-            </span>
-            <span class="icon-bar">
-            </span>
-          </button>
-          <a class="navbar-brand" href="home">PeerFile</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="monitoring"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
-          </ul>
-          <c:if test="${isLogged}">
-          <ul class="nav navbar-nav navbar-right">
-            <li>
-            <a href="logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a>
-            </li>
-          </ul>
-          </c:if>
-        </div>
-      </div>
-    </nav>
+    
+    <jsp:include page="navigation.jsp"/>
+    
     <div class="container">
       
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

@@ -199,12 +199,9 @@ public class IndexController {
 			model.addAttribute("serversList", client.getServers().getMaps());
 			model.addAttribute("chosenServer", session.getAttribute("server"));		// chosen server from user
 		}
-		String url = isLogged(session, model);
-		if (url.isEmpty()){
-			model.addAttribute("isLogged", true);
-		} else {
-			model.addAttribute("isLogged", false);
-		}
+		String url = isLogged(session, model);	
+		model.addAttribute("navActive", "monitoring");
+		
 		return ms.monitor(session, model, serverKey, client.getServers().getMaps());
 	}
 
