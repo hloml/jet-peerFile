@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,6 +21,8 @@ import tools.Formatter;
  *
  */
 public class JsonMonitoring extends Thread {
+	
+	private final static Logger logger = Logger.getLogger(JsonMonitoring.class);
 	
 	private final String monitorApiUrl;
 
@@ -189,171 +193,90 @@ public class JsonMonitoring extends Thread {
 	@Override
 	public void run() {
 		while(true){
+			try {
+				// PF_VERSION
+				pf_version = getJsonElement(PF_VERSION).getAsJsonObject().get(PF_VERSION).getAsString();
+
+				// INSTANCE_ID
+				instance_id = getJsonElement(INSTANCE_ID).getAsJsonObject().get(INSTANCE_ID).getAsString();
+
+				// SYSTEM_LOAD
+				system_load = getJsonElement(SYSTEM_LOAD).getAsJsonObject().get(SYSTEM_LOAD).getAsDouble();
+
+				// SESSIONS_COUNT
+				sessions_count = getJsonElement(SESSIONS_COUNT).getAsJsonObject().get(SESSIONS_COUNT).getAsLong();
+
+				// SESSIONS_INFO
+				JsonArray ja = getJsonElement(SESSIONS_INFO).getAsJsonArray();
+				int size = ja.size();
+				sessions_info = new SessionInfo[size];
+				int i = 0;
+				for (JsonElement jsonElement : ja) {
+					sessions_info[i] = new SessionInfo();
+					sessions_info[i].setSessionCode(jsonElement.getAsJsonObject().get(SESSIONS_CODE).getAsString());
+					sessions_info[i].setSessionName(jsonElement.getAsJsonObject().get(SESSIONS_NAME).getAsString());
+					sessions_info[i].setSessionStart(Formatter.stringToDate(jsonElement.getAsJsonObject().get(SESSIONS_START).getAsString()));
+					sessions_info[i].setLastRequest(Formatter.stringToDate(jsonElement.getAsJsonObject().get(SESSIONS_LAST_REQUEST).getAsString()));
+					sessions_info[i].setUserName(jsonElement.getAsJsonObject().get(SESSIONS_USERNAME).getAsString());
+					i++;
+				}
+				
+				// MEMORY_INFO
+				JsonObject jo = getJsonElement(MEMORY_INFO).getAsJsonObject();
+				memory_info = new Long[3];
+				memory_info[0] = jo.get(MEMORY_TOTAL).getAsLong();
+				memory_info[1] = jo.get(MEMORY_FREE).getAsLong();
+				memory_info[2] = memory_info[0] - memory_info[1];
+				
+				// DISK_SPACE
+				ja = null;
+				ja = getJsonElement(DISK_SPACE).getAsJsonArray();
+				size = ja.size();
+				disk_space = new DiskSpace[size];
+				i = 0;
+				for (JsonElement jsonElement : ja) {
+					disk_space[i] = new DiskSpace();
+					disk_space[i].setDriveName(jsonElement.getAsJsonObject().get(DISK_NAME).getAsString());
+					disk_space[i].setTotalSpace(jsonElement.getAsJsonObject().get(DISK_TOTAL).getAsLong());
+					disk_space[i].setFreeSpace(jsonElement.getAsJsonObject().get(DISK_FREE).getAsLong());
+					disk_space[i].setUsedSpace(disk_space[i].getTotalSpace() - disk_space[i].getFreeSpace());
+					i++;
+				}
+
+				// PASSENGER_INFO
+				passenger_info = getJsonElement(PASSENGER_INFO).getAsJsonObject().get(PASSENGER_INFO_TEXT).getAsString();
+				//passenger_info = Formatter.plainTextToHtml(passenger_info);
+				
+				// REPLICATION_CONFIG
+				jo = null;
+				jo = getJsonElement(REPLICATION_CONFIG).getAsJsonObject();
+				replication_config = new Boolean[2];
+				replication_config[0] = jo.get(REPL_USE).getAsBoolean();
+				replication_config[1] = jo.get(REPL_ACT).getAsBoolean();
+				
+				// REPLICA_MASTER_INFO
+				jo = null;
+				jo = getJsonElement(REPLICA_MASTER_INFO).getAsJsonObject();
+				replica_master_info = new Long[3];
+				replica_master_info[0] = jo.get(REPLICA_MASTER_WAITING_TO_SEND).getAsLong();
+				replica_master_info[1] = jo.get(REPLICA_MASTER_WAITING_TO_CONFIRM).getAsLong();
+				replica_master_info[2] = jo.get(REPLICA_MASTER_FAILED).getAsLong();
 			
-			new Thread(){
-				public void run() {
-					try {
-						pf_version = getJsonElement(PF_VERSION).getAsJsonObject().get(PF_VERSION).getAsString();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						instance_id = getJsonElement(INSTANCE_ID).getAsJsonObject().get(INSTANCE_ID).getAsString();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						system_load = getJsonElement(SYSTEM_LOAD).getAsJsonObject().get(SYSTEM_LOAD).getAsDouble();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						sessions_count = getJsonElement(SESSIONS_COUNT).getAsJsonObject().get(SESSIONS_COUNT).getAsLong();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						JsonArray ja = getJsonElement(SESSIONS_INFO).getAsJsonArray();
-						int size = ja.size();
-						sessions_info = new SessionInfo[size];
-						int i = 0;
-						for (JsonElement jsonElement : ja) {
-							sessions_info[i] = new SessionInfo();
-							sessions_info[i].setSessionCode(jsonElement.getAsJsonObject().get(SESSIONS_CODE).getAsString());
-							sessions_info[i].setSessionName(jsonElement.getAsJsonObject().get(SESSIONS_NAME).getAsString());
-							sessions_info[i].setSessionStart(Formatter.stringToDate(jsonElement.getAsJsonObject().get(SESSIONS_START).getAsString()));
-							sessions_info[i].setLastRequest(Formatter.stringToDate(jsonElement.getAsJsonObject().get(SESSIONS_LAST_REQUEST).getAsString()));
-							sessions_info[i].setUserName(jsonElement.getAsJsonObject().get(SESSIONS_USERNAME).getAsString());
-							i++;
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						JsonObject jo = getJsonElement(MEMORY_INFO).getAsJsonObject();
-						memory_info = new Long[3];
-						memory_info[0] = jo.get(MEMORY_TOTAL).getAsLong();
-						memory_info[1] = jo.get(MEMORY_FREE).getAsLong();
-						memory_info[2] = memory_info[0] - memory_info[1];
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						JsonArray ja = getJsonElement(DISK_SPACE).getAsJsonArray();
-						int size = ja.size();
-						disk_space = new DiskSpace[size];
-						int i = 0;
-						for (JsonElement jsonElement : ja) {
-							disk_space[i] = new DiskSpace();
-							disk_space[i].setDriveName(jsonElement.getAsJsonObject().get(DISK_NAME).getAsString());
-							disk_space[i].setTotalSpace(jsonElement.getAsJsonObject().get(DISK_TOTAL).getAsLong());
-							disk_space[i].setFreeSpace(jsonElement.getAsJsonObject().get(DISK_FREE).getAsLong());
-							disk_space[i].setUsedSpace(disk_space[i].getTotalSpace() - disk_space[i].getFreeSpace());
-							i++;
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						passenger_info = getJsonElement(PASSENGER_INFO).getAsJsonObject().get(PASSENGER_INFO_TEXT).getAsString();
-						//passenger_info = Formatter.plainTextToHtml(passenger_info);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						JsonObject jo = getJsonElement(REPLICATION_CONFIG).getAsJsonObject();
-						replication_config = new Boolean[2];
-						replication_config[0] = jo.get(REPL_USE).getAsBoolean();
-						replication_config[1] = jo.get(REPL_ACT).getAsBoolean();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						JsonObject jo = getJsonElement(REPLICA_MASTER_INFO).getAsJsonObject();
-						replica_master_info = new Long[3];
-						replica_master_info[0] = jo.get(REPLICA_MASTER_WAITING_TO_SEND).getAsLong();
-						replica_master_info[1] = jo.get(REPLICA_MASTER_WAITING_TO_CONFIRM).getAsLong();
-						replica_master_info[2] = jo.get(REPLICA_MASTER_FAILED).getAsLong();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
-			
-	
-			new Thread(){
-				public void run() {
-					try {
-						JsonObject jo = getJsonElement(REPLICA_SLAVE_INFO).getAsJsonObject();
-						replica_slave_info = new Long[3];
-						replica_slave_info[0] = jo.get(REPLICA_SLAVE_INCOMPLETE).getAsLong();
-						replica_slave_info[1] = jo.get(REPLICA_SLAVE_UNPROCESSED).getAsLong();
-						replica_slave_info[2] = jo.get(REPLICA_SLAVE_FAILED).getAsLong();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				};
-			}.start();
+				// REPLICA_SLAVE_INFO
+				jo = null;
+				jo = getJsonElement(REPLICA_SLAVE_INFO).getAsJsonObject();
+				replica_slave_info = new Long[3];
+				replica_slave_info[0] = jo.get(REPLICA_SLAVE_INCOMPLETE).getAsLong();
+				replica_slave_info[1] = jo.get(REPLICA_SLAVE_UNPROCESSED).getAsLong();
+				replica_slave_info[2] = jo.get(REPLICA_SLAVE_FAILED).getAsLong();
+			} catch (IOException e) {
+				logger.info("Monitoring instance is not available: " + monitorApiUrl);
+			}
 			
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.info("Thread sleep InterruptedException: " + monitorApiUrl);
 			}
 
 		}
