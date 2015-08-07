@@ -32,9 +32,27 @@
     <link href="res/monitoring.css" rel="stylesheet">
     <!-- Initialization -->
     <script type="text/javascript" class="init">
+    // tooltip
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
+    // open accordion on url hashtag
+    $(document).ready(function() {
+      var anchor = window.location.hash;
+      $(anchor).addClass("in");
+    });
+    // reload page 
+    function reloadPage(hash) {
+      var urlString = window.location.href;
+      var url = urlString.split("#")[0];
+      window.location.href = "#" + hash;
+      location.reload();
+    }
+    function autoRefresh(hash) {
+        setTimeout(function(){
+        	reloadPage(hash);
+        }, 2000);
+    }
     </script>
     <title>PeerFile - Monitoring
     </title>
@@ -93,7 +111,8 @@
         <c:forEach items="${serversList}" var="server">
           <tr>
             <td>
-            <a href="monitoring?serverKey=${server.code}"><c:out value="${server.code}"></c:out></a>
+            <a <c:if test="${monitoredServer == server}">data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseMonitor"</c:if>
+            href="monitoring?serverKey=${server.code}#collapseMonitor"><c:out value="${server.code}"></c:out></a>
       		</td>
       		<td>
       		<a href="${server.getAddress()}:${server.getPort()}">${server.getAddress()}:${server.getPort()}</a>
@@ -112,7 +131,8 @@
       		${server.monitoring().getInstance_id()}
             </td>
       		<td>
-      		${server.monitoring().getSessions_count()}
+      		<a <c:if test="${monitoredServer == server}">data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseSessions"</c:if>
+      		href="monitoring?serverKey=${server.code}#collapseSessions">${server.monitoring().getSessions_count()}</a>
             </td>
       		<td>
       		<c:choose>
@@ -131,24 +151,24 @@
 
             </td>
       		<td>
-	      <div class="progress progress-small" data-toggle="tooltip" data-placement="top" title="<fmt:formatNumber type="percent" maxFractionDigits="2" value="${server.monitoring().getSystem_load()}" />">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getSystem_load()}" />;">
+	      <div class="progress progress-small" data-toggle="tooltip" data-placement="top" title="${server.monitoring().getSystem_load()}">
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(Formatter.serverLoadPercent(server.monitoring().getSystem_load()))}" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${Formatter.serverLoadPercent(server.monitoring().getSystem_load())}" />;">
             </div>
           </div>
             </td>
       		<td>
 	      <div class="progress progress-small" data-toggle="tooltip" data-placement="top" title="${Formatter.convertKiloBytes(server.monitoring().getMemory_info()[2])} / ${Formatter.convertKiloBytes(server.monitoring().getMemory_info()[0])}">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getMemory_info()[2]/server.monitoring().getMemory_info()[0]}" />;">
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(server.monitoring().getMemory_info()[2], server.monitoring().getMemory_info()[0])}" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getMemory_info()[2]/server.monitoring().getMemory_info()[0]}" />;">
             </div>
           </div>
             </td>
       		<td>
 	      <div class="progress progress-mini" data-toggle="tooltip" data-placement="top" title="${server.monitoring().getDisk_space()[0].getDriveName()}: ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[0].getUsedSpace())} / ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[0].getTotalSpace())}">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getDisk_space()[0].getUsedSpace()/server.monitoring().getDisk_space()[0].getTotalSpace()}" />;">
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(server.monitoring().getDisk_space()[0].getUsedSpace(), server.monitoring().getDisk_space()[0].getTotalSpace())}" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getDisk_space()[0].getUsedSpace()/server.monitoring().getDisk_space()[0].getTotalSpace()}" />;">
             </div>
           </div>
 	      <div class="progress progress-mini" data-toggle="tooltip" data-placement="bottom" title="${server.monitoring().getDisk_space()[1].getDriveName()}: ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[1].getUsedSpace())} / ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[1].getTotalSpace())}">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getDisk_space()[1].getUsedSpace()/server.monitoring().getDisk_space()[1].getTotalSpace()}" />;">
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(server.monitoring().getDisk_space()[1].getUsedSpace(), server.monitoring().getDisk_space()[1].getTotalSpace())}" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getDisk_space()[1].getUsedSpace()/server.monitoring().getDisk_space()[1].getTotalSpace()}" />;">
             </div>
           </div>
             </td>
@@ -156,9 +176,9 @@
       		  </c:when>
       		  <c:otherwise>
       		    <td colspan="7">
-  <span class="alert alert-danger alert-small" role="alert" style="margin-top:20px;">
-    <strong>Error:</strong> Monitoring instance is not available.
-  </span>
+                  <span class="alert alert-danger alert-small" role="alert" style="margin-top:20px;">
+                    <strong>Error:</strong> Monitoring instance is not available.
+                  </span>
       		    </td>
       		  </c:otherwise>
       		</c:choose>
@@ -169,11 +189,69 @@
         </tbody>
       </table>
 
-          <a type="button" class="btn btn-default" href="monitoring" data-toggle="tooltip" data-placement="top" title="Refresh">
-            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-          </a>
 
-      </div>
+            <div class="row">
+              <div class="col-md-6">
+                <button type="button" class="btn btn-default"
+                  onclick="reloadPage('collapseInstances')"
+                  data-toggle="tooltip" data-placement="top"
+                  title="Refresh">
+                  <span class="glyphicon glyphicon-refresh"
+                    aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-default"
+                  onclick="autoRefresh('collapseInstances')"
+                  data-toggle="tooltip" data-placement="top"
+                  title="Auto Refresh">
+                  <span class="glyphicon glyphicon-warning-sign"
+                    aria-hidden="true"></span> Under construction
+                </button>
+              </div>
+
+              <div class="col-md-6 row">
+                <div class="col-md-3">
+                  <div class="progress progress-small"
+                    style="width: 100px">
+                    <div class="progress-bar progress-bar-custom-normal"
+                      role="progressbar" style="width: 100%">
+                      normal &lt; 80%</div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="progress progress-small"
+                    style="width: 100px">
+                    <div
+                      class="progress-bar progress-bar-custom-warning"
+                      role="progressbar" style="width: 100%">
+                      warning &lt; 90%</div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="progress progress-small"
+                    style="width: 100px">
+                    <div class="progress-bar progress-bar-custom-danger"
+                      role="progressbar" style="width: 100%">
+                      danger &lt; 95%</div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="progress progress-small"
+                    style="width: 100px">
+                    <div
+                      class="progress-bar progress-bar-custom-critical"
+                      role="progressbar" style="width: 100%">
+                      critical &gt; 95%</div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
     </div>
   </div>
 
@@ -190,7 +268,7 @@
         </a>
       </h4>
     </div>
-    <div id="collapseMonitor" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingMonitor">
+    <div id="collapseMonitor" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMonitor">
       <div class="panel-body">
 	  
 	  <div class="row">
@@ -202,7 +280,7 @@
 	      
 	      <div class="row">
             <div class="col-md-7">
-            Server key:
+            Server code:
             </div>
             <div class="col-md-5">
             ${monitoredServer.getCode()}
@@ -345,14 +423,14 @@
 	    <h4>Instance usage info</h4>
 	    <h5>System load</h5>
 	      <div class="progress progress-large">
-            <div class="progress-bar progress-bar-custom progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${monitoredServer.monitoring().getSystem_load()}" />;">
-              <span><fmt:formatNumber type="percent" maxFractionDigits="2" value="${monitoredServer.monitoring().getSystem_load()}" /></span>
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(Formatter.serverLoadPercent(monitoredServer.monitoring().getSystem_load()))} progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${Formatter.serverLoadPercent(monitoredServer.monitoring().getSystem_load())}" />;">
+              <span>${monitoredServer.monitoring().getSystem_load()}</span>
             </div>
           </div>
           
 	    <h5>Memory usage</h5>
 	      <div class="progress progress-large">
-            <div class="progress-bar progress-bar-custom progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${monitoredServer.monitoring().getMemory_info()[2]/monitoredServer.monitoring().getMemory_info()[0]}" />;">
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(monitoredServer.monitoring().getMemory_info()[2], monitoredServer.monitoring().getMemory_info()[0])} progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${monitoredServer.monitoring().getMemory_info()[2]/monitoredServer.monitoring().getMemory_info()[0]}" />;">
               <span>${Formatter.convertKiloBytes(monitoredServer.monitoring().getMemory_info()[2])} / ${Formatter.convertKiloBytes(monitoredServer.monitoring().getMemory_info()[0])}</span>
               
             </div>
@@ -364,14 +442,14 @@
 		  <c:forEach var="diskSpace" items="${monitoredServer.monitoring().getDisk_space()}">
 	    <h5><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> ${diskSpace.getDriveName()}</h5>
 	      <div class="progress progress-large">
-            <div class="progress-bar progress-bar-custom progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${diskSpace.getUsedSpace()/diskSpace.getTotalSpace()}" />;">
+            <div class="progress-bar progress-bar-custom-${Formatter.workloadState(diskSpace.getUsedSpace(), diskSpace.getTotalSpace())} progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${diskSpace.getUsedSpace()/diskSpace.getTotalSpace()}" />;">
               <span>${Formatter.convertKiloBytes(diskSpace.getUsedSpace())} / ${Formatter.convertKiloBytes(diskSpace.getTotalSpace())}</span>
               
             </div>
           </div>
 		</c:forEach>
 		
-          <button type="button" class="btn btn-default" onClick="window.location.reload()" data-toggle="tooltip" data-placement="top" title="Refresh">
+          <button type="button" class="btn btn-default" onclick="reloadPage('collapseMonitor')" data-toggle="tooltip" data-placement="top" title="Refresh">
             <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
           </button>
           

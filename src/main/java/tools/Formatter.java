@@ -121,4 +121,47 @@ public class Formatter {
 	public static String getSoapUrl(String url, int port) {
 		return url + ":" + port + soapFolder;
 	}
+	
+	/**
+	 * Vrátí zatížení serveru převedené na procenta
+	 * @param load zatížení v rozsahu <0, inf>
+	 * @return zatížení serveru <0, 1>
+	 */
+	public static double serverLoadPercent(double load) {
+		// -1/(x+1) + 1 <0, inf>
+		// OR
+		// linear <0, 0.5> and -1/(x+1) + 1 <0.5, inf>
+		if(load < 0) {
+			return 0;
+		}
+		return (-1 / (load + 1)) + 1;
+	}
+	
+	/**
+	 * Get workload state from percent
+	 * @param percent <0, 1>
+	 * @return workload state (normal < 0.80, warning < 0.90, danger < 0.95, critical >= 0.95)
+	 */
+	public static String workloadState(double percent) {
+		if(percent < 0.8) {
+			return "normal";
+		}
+		if(percent < 0.9) {
+			return "warning";
+		}
+		if(percent < 0.95) {
+			return "danger";
+		}
+		return "critical";
+	}
+	
+	/**
+	 * Get workload state from value and maximum
+	 * @param value
+	 * @param maximum
+	 * @return workload state (normal < 0.80, warning < 0.90, danger < 0.95, critical >= 0.95)
+	 */
+	public static String workloadState(double value, double maximum) {
+		return workloadState(value/maximum);
+	}
 }

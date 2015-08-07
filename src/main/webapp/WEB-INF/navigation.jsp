@@ -17,7 +17,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li <c:if test="${navActive eq 'monitoring'}">class="active"</c:if>><a href="monitoring"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
+            <li <c:if test="${navActive eq 'monitoring'}">class="active"</c:if>><a href="monitoring<c:if test="${not empty sessionScope.code}">?serverKey=${sessionScope.server}#collapseMonitor</c:if>"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
           </ul>
           <c:if test="${not empty sessionScope.code}">
           <ul class="nav navbar-nav navbar-right">

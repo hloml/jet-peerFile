@@ -270,13 +270,14 @@ public class JsonMonitoring extends Thread {
 				replica_slave_info[1] = jo.get(REPLICA_SLAVE_UNPROCESSED).getAsLong();
 				replica_slave_info[2] = jo.get(REPLICA_SLAVE_FAILED).getAsLong();
 			} catch (IOException e) {
-				logger.info("Monitoring instance is not available: " + monitorApiUrl);
+				instance_id = null;
+				logger.error("Monitoring instance is not available: " + monitorApiUrl);
 			}
 			
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				logger.info("Thread sleep InterruptedException: " + monitorApiUrl);
+				logger.error("Thread sleep InterruptedException: " + monitorApiUrl);
 			}
 
 		}
