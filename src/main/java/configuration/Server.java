@@ -1,11 +1,14 @@
 package configuration;
 
+import monitoring.JsonMonitoring;
+
 public class Server {
 
 	String code;
 	String address;
 	String description;
 	int port;
+	private JsonMonitoring monitoring;
 	
 	
 	public String getCode() {
@@ -31,6 +34,13 @@ public class Server {
 	}
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	public JsonMonitoring monitoring() {
+		if(monitoring == null) {
+			monitoring = new JsonMonitoring(address, port);
+		}
+		return monitoring;
 	}
 
 }

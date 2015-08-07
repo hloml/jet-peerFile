@@ -1,3 +1,4 @@
+<%@page import="monitoring.JsonMonitoring"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
@@ -29,6 +30,12 @@
     <script type="text/javascript" charset="utf-8" src="res/DataTables-1.10.6/media/js/jquery.dataTables.min.js"></script>
     <!-- Custom styles for monitoring -->
     <link href="res/monitoring.css" rel="stylesheet">
+    <!-- Initialization -->
+    <script type="text/javascript" class="init">
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+    </script>
     <title>PeerFile - Monitoring
     </title>
   </head>
@@ -46,25 +53,38 @@
         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseInstances" aria-expanded="true" aria-controls="collapseInstances">
           Instances
         </a>
-        <c:if test="${serverMonitor != null}">
-        -- <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <strong>${choosenServer.getCode()}</strong>
+        <c:if test="${monitoredServer != null}">
+        -- <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <strong>${monitoredServer.getCode()}</strong>
         </c:if>
       </h4>
     </div>
-    <div id="collapseInstances" class="panel-collapse collapse<c:if test="${serverMonitor == null}"> in</c:if>" role="tabpanel" aria-labelledby="headingInstances">
+    <div id="collapseInstances" class="panel-collapse collapse<c:if test="${monitoredServer == null}"> in</c:if>" role="tabpanel" aria-labelledby="headingInstances">
       <div class="panel-body">
       
       <!-- Table -->
       <table id="servers" class="table">
         <thead>
           <tr>
-            <th>Server code (key)
+            <th><span data-toggle="tooltip" data-placement="top" title="Server code">Code</span>
             </th>
-            <th>Address
+            <th><span data-toggle="tooltip" data-placement="top" title="Server address">Address</span>
             </th>
-            <th>Port
+            <th><span data-toggle="tooltip" data-placement="top" title="Description">Description</span>
             </th>
-            <th>Description
+            <!-- monitoring json -->
+            <th><span data-toggle="tooltip" data-placement="top" title="PeerFile version">PFv.</span> <!-- PeerFile version -->
+            </th>
+            <th><span data-toggle="tooltip" data-placement="top" title="ID">ID</span>
+            </th>
+            <th><span data-toggle="tooltip" data-placement="top" title="Sessions count">S.</span>
+            </th>
+            <th><span data-toggle="tooltip" data-placement="top" title="Replication">Repl.</span>
+            </th>
+            <th><span data-toggle="tooltip" data-placement="top" title="System load">Load</span>
+            </th>
+            <th><span data-toggle="tooltip" data-placement="top" title="Memory usage">Mem.</span>
+            </th>
+            <th><span data-toggle="tooltip" data-placement="top" title="Disk info">Disk</span>
             </th>
           </tr>
         </thead>
@@ -73,33 +93,94 @@
         <c:forEach items="${serversList}" var="server">
           <tr>
             <td>
-            <a href="monitoring?serverKey=${server.key}"><c:out value="${server.key}"></c:out></a>
-            
+            <a href="monitoring?serverKey=${server.code}"><c:out value="${server.code}"></c:out></a>
       		</td>
       		<td>
-      		${server.value.address}
+      		<a href="${server.getAddress()}:${server.getPort()}">${server.getAddress()}:${server.getPort()}</a>
             </td>
       		<td>
-      		${server.value.port}
+      		${server.description}
+            </td>
+            
+      		<c:choose>
+      		  <c:when test="${server.monitoring().getInstance_id() != null}">
+      		  
+      		<td>
+      		${server.monitoring().getPf_version()}
             </td>
       		<td>
-      		${server.value.description}
+      		${server.monitoring().getInstance_id()}
             </td>
+      		<td>
+      		${server.monitoring().getSessions_count()}
+            </td>
+      		<td>
+      		<c:choose>
+      		  <c:when test="${server.monitoring().getReplication_config()[0]}">
+      		    <span data-toggle="tooltip" data-placement="left" title="Replica Master">M</span>
+      		    <span data-toggle="tooltip" data-placement="top" title="Incomplete messages">${server.monitoring().getReplica_master_info()[0]}</span>/<span data-toggle="tooltip" data-placement="bottom" title="Unprocessed messages">${server.monitoring().getReplica_master_info()[1]}</span>/<span data-toggle="tooltip" data-placement="right" title="Failed messages">${server.monitoring().getReplica_master_info()[2]}</span>
+      		  </c:when>
+      		  <c:when test="${server.monitoring().getReplication_config()[1]}">
+      		    <span data-toggle="tooltip" data-placement="left" title="Replica Slave">S</span>
+      		    <span data-toggle="tooltip" data-placement="top" title="Incomplete messages">${server.monitoring().getReplica_slave_info()[0]}</span>/<span data-toggle="tooltip" data-placement="bottom" title="Unprocessed messages">${server.monitoring().getReplica_slave_info()[1]}</span>/<span data-toggle="tooltip" data-placement="right" title="Failed messages">${server.monitoring().getReplica_slave_info()[2]}</span>
+      		  </c:when>
+      		  <c:otherwise>
+      		    No
+      		  </c:otherwise>
+      		</c:choose>
+
+            </td>
+      		<td>
+	      <div class="progress progress-small" data-toggle="tooltip" data-placement="top" title="<fmt:formatNumber type="percent" maxFractionDigits="2" value="${server.monitoring().getSystem_load()}" />">
+            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getSystem_load()}" />;">
+            </div>
+          </div>
+            </td>
+      		<td>
+	      <div class="progress progress-small" data-toggle="tooltip" data-placement="top" title="${Formatter.convertKiloBytes(server.monitoring().getMemory_info()[2])} / ${Formatter.convertKiloBytes(server.monitoring().getMemory_info()[0])}">
+            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getMemory_info()[2]/server.monitoring().getMemory_info()[0]}" />;">
+            </div>
+          </div>
+            </td>
+      		<td>
+	      <div class="progress progress-mini" data-toggle="tooltip" data-placement="top" title="${server.monitoring().getDisk_space()[0].getDriveName()}: ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[0].getUsedSpace())} / ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[0].getTotalSpace())}">
+            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getDisk_space()[0].getUsedSpace()/server.monitoring().getDisk_space()[0].getTotalSpace()}" />;">
+            </div>
+          </div>
+	      <div class="progress progress-mini" data-toggle="tooltip" data-placement="bottom" title="${server.monitoring().getDisk_space()[1].getDriveName()}: ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[1].getUsedSpace())} / ${Formatter.convertKiloBytes(server.monitoring().getDisk_space()[1].getTotalSpace())}">
+            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${server.monitoring().getDisk_space()[1].getUsedSpace()/server.monitoring().getDisk_space()[1].getTotalSpace()}" />;">
+            </div>
+          </div>
+            </td>
+            
+      		  </c:when>
+      		  <c:otherwise>
+      		    <td colspan="7">
+  <span class="alert alert-danger alert-small" role="alert" style="margin-top:20px;">
+    <strong>Error:</strong> Monitoring instance is not available.
+  </span>
+      		    </td>
+      		  </c:otherwise>
+      		</c:choose>
+            
       	  </tr>
       	</c:forEach>
       	
         </tbody>
       </table>
 
+          <a type="button" class="btn btn-default" href="monitoring" data-toggle="tooltip" data-placement="top" title="Refresh">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          </a>
 
       </div>
     </div>
   </div>
 
 
-<c:if test="${serverMonitor != null}">
+<c:if test="${monitoredServer != null}">
 <c:choose>
-<c:when test="${serverMonitor.getInstance_id() != null}">
+<c:when test="${monitoredServer.monitoring().getInstance_id() != null}">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingMonitor">
       <h4 class="panel-title">
@@ -124,7 +205,7 @@
             Server key:
             </div>
             <div class="col-md-5">
-            ${choosenServer.getCode()}
+            ${monitoredServer.getCode()}
             </div>
 	      </div>
         
@@ -133,7 +214,7 @@
             Address:
             </div>
             <div class="col-md-5">
-            <a href="${choosenServer.getAddress()}:${choosenServer.getPort()}">${choosenServer.getAddress()}:${choosenServer.getPort()}</a>
+            <a href="${monitoredServer.getAddress()}:${monitoredServer.getPort()}">${monitoredServer.getAddress()}:${monitoredServer.getPort()}</a>
             </div>
 	      </div>
 	      
@@ -142,7 +223,7 @@
             PeerFile version:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getPf_version()}
+            ${monitoredServer.monitoring().getPf_version()}
             </div>
 	      </div>
         
@@ -151,7 +232,7 @@
             Instance ID:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getInstance_id()}
+            ${monitoredServer.monitoring().getInstance_id()}
             </div>
 	      </div>
         
@@ -160,7 +241,7 @@
             System load:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getSystem_load()}
+            ${monitoredServer.monitoring().getSystem_load()}
             </div>
 	      </div>
         
@@ -170,7 +251,7 @@
             </div>
             <div class="col-md-5">
             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSessions" aria-expanded="false" aria-controls="collapseSessions">
-            ${serverMonitor.getSessions_count()}
+            ${monitoredServer.monitoring().getSessions_count()}
             </a>
             </div>
 	      </div>
@@ -183,7 +264,7 @@
             Use replica:
             </div>
             <div class="col-md-5">
-            <c:choose><c:when test="${serverMonitor.getReplication_config()[0]}">Yes</c:when><c:otherwise>No</c:otherwise></c:choose>
+            <c:choose><c:when test="${monitoredServer.monitoring().getReplication_config()[0]}">Yes</c:when><c:otherwise>No</c:otherwise></c:choose>
             </div>
 	      </div>
 	      
@@ -192,7 +273,7 @@
             Acts as replica
             </div>
             <div class="col-md-5">
-            <c:choose><c:when test="${serverMonitor.getReplication_config()[1]}">Yes</c:when><c:otherwise>No</c:otherwise></c:choose>
+            <c:choose><c:when test="${monitoredServer.monitoring().getReplication_config()[1]}">Yes</c:when><c:otherwise>No</c:otherwise></c:choose>
             </div>
 	      </div>
 	      
@@ -204,7 +285,7 @@
             Incomplete messages:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getReplica_master_info()[0]}
+            ${monitoredServer.monitoring().getReplica_master_info()[0]}
             </div>
 	      </div>
       
@@ -213,7 +294,7 @@
             Unprocessed messages:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getReplica_master_info()[1]}
+            ${monitoredServer.monitoring().getReplica_master_info()[1]}
             </div>
 	      </div>
       
@@ -222,7 +303,7 @@
             Failed messages:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getReplica_master_info()[2]}
+            ${monitoredServer.monitoring().getReplica_master_info()[2]}
             </div>
 	      </div>
 	      
@@ -234,7 +315,7 @@
             Incomplete messages:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getReplica_slave_info()[0]}
+            ${monitoredServer.monitoring().getReplica_slave_info()[0]}
             </div>
 	      </div>
       
@@ -243,7 +324,7 @@
             Unprocessed messages:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getReplica_slave_info()[1]}
+            ${monitoredServer.monitoring().getReplica_slave_info()[1]}
             </div>
 	      </div>
       
@@ -252,7 +333,7 @@
             Failed messages:
             </div>
             <div class="col-md-5">
-            ${serverMonitor.getReplica_slave_info()[2]}
+            ${monitoredServer.monitoring().getReplica_slave_info()[2]}
             </div>
 	      </div>
 	      
@@ -263,16 +344,16 @@
 	    
 	    <h4>Instance usage info</h4>
 	    <h5>System load</h5>
-	      <div class="progress">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${serverMonitor.getSystem_load()}" />;">
-              <span><fmt:formatNumber type="percent" maxFractionDigits="2" value="${serverMonitor.getSystem_load()}" /></span>
+	      <div class="progress progress-large">
+            <div class="progress-bar progress-bar-custom progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${monitoredServer.monitoring().getSystem_load()}" />;">
+              <span><fmt:formatNumber type="percent" maxFractionDigits="2" value="${monitoredServer.monitoring().getSystem_load()}" /></span>
             </div>
           </div>
           
 	    <h5>Memory usage</h5>
-	      <div class="progress">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${serverMonitor.getMemory_info()[2]/serverMonitor.getMemory_info()[0]}" />;">
-              <span>${Formatter.convertKiloBytes(serverMonitor.getMemory_info()[2])} / ${Formatter.convertKiloBytes(serverMonitor.getMemory_info()[0])}</span>
+	      <div class="progress progress-large">
+            <div class="progress-bar progress-bar-custom progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${monitoredServer.monitoring().getMemory_info()[2]/monitoredServer.monitoring().getMemory_info()[0]}" />;">
+              <span>${Formatter.convertKiloBytes(monitoredServer.monitoring().getMemory_info()[2])} / ${Formatter.convertKiloBytes(monitoredServer.monitoring().getMemory_info()[0])}</span>
               
             </div>
           </div>
@@ -280,17 +361,17 @@
           <hr>
           
           <h4>Disk info</h4>
-		  <c:forEach var="diskSpace" items="${serverMonitor.getDisk_space()}">
+		  <c:forEach var="diskSpace" items="${monitoredServer.monitoring().getDisk_space()}">
 	    <h5><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> ${diskSpace.getDriveName()}</h5>
-	      <div class="progress">
-            <div class="progress-bar progress-bar-custom" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${diskSpace.getUsedSpace()/diskSpace.getTotalSpace()}" />;">
+	      <div class="progress progress-large">
+            <div class="progress-bar progress-bar-custom progress-bar-custom-large" role="progressbar" style="width: <fmt:formatNumber type="percent" maxFractionDigits="0" value="${diskSpace.getUsedSpace()/diskSpace.getTotalSpace()}" />;">
               <span>${Formatter.convertKiloBytes(diskSpace.getUsedSpace())} / ${Formatter.convertKiloBytes(diskSpace.getTotalSpace())}</span>
               
             </div>
           </div>
 		</c:forEach>
 		
-          <button type="button" class="btn btn-default" onClick="window.location.reload()">
+          <button type="button" class="btn btn-default" onClick="window.location.reload()" data-toggle="tooltip" data-placement="top" title="Refresh">
             <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
           </button>
           
@@ -314,7 +395,7 @@
       <div class="panel-body">
 	  
 	  <c:choose>
-	    <c:when test="${serverMonitor.getSessions_count() < 1}">
+	    <c:when test="${monitoredServer.monitoring().getSessions_count() < 1}">
 	      There are currently no sessions active.
 	    </c:when>
 	    <c:otherwise>
@@ -337,7 +418,7 @@
 	        </thead>
 	        <tbody>
 	        
-	        <c:forEach var="sessionInfo" items="${serverMonitor.getSessions_info()}">
+	        <c:forEach var="sessionInfo" items="${monitoredServer.monitoring().getSessions_info()}">
 	          <tr>
 	            <td>
 	            ${sessionInfo.getSessionName()}
@@ -378,7 +459,7 @@
     <div id="collapsePassenger" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPassenger">
       <div class="panel-body">
 	  
-	  	<pre>${serverMonitor.getPassenger_info()}</pre>
+	  	<pre>${monitoredServer.monitoring().getPassenger_info()}</pre>
 	  	
 	  </div>
     </div>
@@ -386,7 +467,7 @@
 </c:when>
 <c:otherwise>
   <div class="alert alert-danger" role="alert" style="margin-top:20px;">
-    <strong>Error:</strong> Monitoring instance <strong><i>${choosenServer.getCode()}</i></strong> is not available.
+    <strong>Error:</strong> Monitoring instance <strong><i>${monitoredServer.getCode()}</i></strong> is not available.
   </div>
 </c:otherwise>
 </c:choose>

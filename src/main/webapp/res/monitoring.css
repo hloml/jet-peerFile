@@ -22,6 +22,19 @@
 
 	position: relative;
 	border: 0px solid rgba(245, 245, 245, 1);
+}
+
+.progress-small {
+	margin: 0px;
+}
+
+.progress-mini {
+	margin: 0px;
+	margin-bottom: 1px;
+	height: 9px;
+}
+
+.progress-large {
 	border-radius: 6px;
 	height: 28px;
 }
@@ -36,8 +49,16 @@
 	background: -ms-linear-gradient(top,  #67a6ed 0%,#7bbbf3 61%,#88c2f2 64%,#67a6ed 70%,#67a6ed 91%,#b7dbf7 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #67a6ed 0%,#7bbbf3 61%,#88c2f2 64%,#67a6ed 70%,#67a6ed 91%,#b7dbf7 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#67a6ed', endColorstr='#b7dbf7',GradientType=0 ); /* IE6-9 */
+}
 
+.progress-bar-custom-large {
 	padding: 4px;
+}
+
+
+.alert-small {
+	padding: 4px;
+	margin: 0px;
 }
 
 /**

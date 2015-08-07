@@ -4,13 +4,13 @@ import java.util.Map;
 
 public class Servers {
 
-	private Map<Object, Object> maps;
+	private Map<Object, Server> maps;
 
-	public Map<Object, Object> getMaps() {
+	public Map<Object, Server> getMaps() {
 		return maps;
 	}
 
-	public void setMaps(Map<Object, Object> maps) {
+	public void setMaps(Map<Object, Server> maps) {
 		this.maps = maps;
 	}
 

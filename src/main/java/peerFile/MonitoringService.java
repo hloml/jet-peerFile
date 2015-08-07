@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 
+import configuration.Server;
+
 /**
  * Rozhraní monitorovacích služeb.
  * @author Jara
@@ -21,5 +23,5 @@ public interface MonitoringService {
 	 * @param servers Mapa serverů.
 	 * @return Http odpověď.
 	 */
-	public String monitor(HttpSession session, Model model, String serverKey, Map<Object, Object> servers);
+	public String monitor(HttpSession session, Model model, String serverKey, Map<Object, Server> servers);
 }

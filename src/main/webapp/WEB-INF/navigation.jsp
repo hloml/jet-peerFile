@@ -12,12 +12,10 @@
             </span>
             <span class="icon-bar">
             </span>
-          </button>        
+          </button>
+          <a class="navbar-brand" href="home">PeerFile</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-            <li <c:if test="${navActive ne 'monitoring'}">class="active"</c:if>><a href="home"><span class="glyphicon" aria-hidden="true"></span>PeerFile</a></li>
-          </ul>
           <ul class="nav navbar-nav">
             <li <c:if test="${navActive eq 'monitoring'}">class="active"</c:if>><a href="monitoring"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Monitoring</a></li>
           </ul>

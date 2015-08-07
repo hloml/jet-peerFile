@@ -14,6 +14,8 @@ import org.springframework.stereotype.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import configuration.Server;
+
 /**
  * @author
  *
@@ -195,11 +197,6 @@ public class IndexController {
 	public String monitoring(@RequestParam(value = "serverKey", required = false) String serverKey,
 			HttpSession session, Model model) {
 		
-		if(!model.containsAttribute("serversList")){
-			model.addAttribute("serversList", client.getServers().getMaps());
-			model.addAttribute("chosenServer", session.getAttribute("server"));		// chosen server from user
-		}
-		String url = isLogged(session, model);	
 		model.addAttribute("navActive", "monitoring");
 		
 		return ms.monitor(session, model, serverKey, client.getServers().getMaps());
