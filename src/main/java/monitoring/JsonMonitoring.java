@@ -21,10 +21,14 @@ import tools.Formatter;
  *
  */
 public class JsonMonitoring extends Thread {
+    
+    private boolean monitoringAvailable;
 	
 	private final static Logger logger = Logger.getLogger(JsonMonitoring.class);
 	
 	private final String monitorApiUrl;
+	
+	//
 
 	private static final String PF_VERSION = "pf_version";
 	
@@ -67,6 +71,8 @@ public class JsonMonitoring extends Thread {
 		private static final String REPLICA_SLAVE_UNPROCESSED = "unprocessed_message_count";
 		private static final String REPLICA_SLAVE_FAILED = "failed_message_count";
 	
+	//
+		
 	private String pf_version = null;
 	private String instance_id;
 	private Double system_load;
@@ -86,6 +92,7 @@ public class JsonMonitoring extends Thread {
 	 */
 	public JsonMonitoring(String url, int port) {
 		monitorApiUrl = Formatter.getMonitoringApiUrl(url, port);
+		monitoringAvailable = true;
 		this.start();
 	}
 	
@@ -177,7 +184,15 @@ public class JsonMonitoring extends Thread {
 		return replica_slave_info;
 	}
 	
-	private JsonElement getJsonElement(String method) throws IOException{
+	/**
+	 * 
+	 * @return true, if monitoring instance is available
+	 */
+	public boolean isMonitoringAvailable() {
+        return monitoringAvailable;
+    }
+
+    private JsonElement getJsonElement(String method) throws IOException{
 		String sURL = monitorApiUrl + method;
 		URL url = new URL(sURL);
 	    HttpURLConnection request = (HttpURLConnection) url.openConnection();
@@ -269,9 +284,16 @@ public class JsonMonitoring extends Thread {
 				replica_slave_info[0] = jo.get(REPLICA_SLAVE_INCOMPLETE).getAsLong();
 				replica_slave_info[1] = jo.get(REPLICA_SLAVE_UNPROCESSED).getAsLong();
 				replica_slave_info[2] = jo.get(REPLICA_SLAVE_FAILED).getAsLong();
+				
+				if(!monitoringAvailable) {
+                    logger.info("Monitoring instance is now available: " + monitorApiUrl);
+                    monitoringAvailable = true;
+				}
 			} catch (IOException e) {
-				instance_id = null;
-				logger.error("Monitoring instance is not available: " + monitorApiUrl);
+			    if(monitoringAvailable) {
+	                logger.error("Monitoring instance is not available: " + monitorApiUrl);
+	                monitoringAvailable = false;
+			    }
 			}
 			
 			try {

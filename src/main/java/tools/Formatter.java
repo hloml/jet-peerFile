@@ -140,18 +140,19 @@ public class Formatter {
 	/**
 	 * Get workload state from percent
 	 * @param percent <0, 1>
-	 * @return workload state (normal < 0.80, warning < 0.90, danger < 0.95, critical >= 0.95)
+	 * @return workload state (normal < 0.85, critical >= 0.85)
 	 */
 	public static String workloadState(double percent) {
-		if(percent < 0.8) {
+		if(percent < 0.85) {
 			return "normal";
 		}
-		if(percent < 0.9) {
-			return "warning";
-		}
-		if(percent < 0.95) {
-			return "danger";
-		}
+//      * @return workload state (normal < 0.80, warning < 0.90, danger < 0.95, critical >= 0.95)
+//		if(percent < 0.9) {
+//			return "warning";
+//		}
+//		if(percent < 0.95) {
+//			return "danger";
+//		}
 		return "critical";
 	}
 	
@@ -159,7 +160,7 @@ public class Formatter {
 	 * Get workload state from value and maximum
 	 * @param value
 	 * @param maximum
-	 * @return workload state (normal < 0.80, warning < 0.90, danger < 0.95, critical >= 0.95)
+     * @return workload state (normal < 0.85, critical >= 0.85)
 	 */
 	public static String workloadState(double value, double maximum) {
 		return workloadState(value/maximum);

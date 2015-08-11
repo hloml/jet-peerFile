@@ -12,6 +12,10 @@ public class Servers {
 
 	public void setMaps(Map<Object, Server> maps) {
 		this.maps = maps;
+		// initialize monitoring
+		for (Map.Entry<Object, Server> m : maps.entrySet()) {
+            m.getValue().monitoring();
+        }
 	}
 
 

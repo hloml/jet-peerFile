@@ -195,11 +195,12 @@ public class IndexController {
 
 	@RequestMapping("/monitoring")
 	public String monitoring(@RequestParam(value = "serverKey", required = false) String serverKey,
+	        @RequestParam(value = "refresh", required = false) String autoRefresh,
 			HttpSession session, Model model) {
 		
 		model.addAttribute("navActive", "monitoring");
 		
-		return ms.monitor(session, model, serverKey, client.getServers().getMaps());
+		return ms.monitor(session, model, serverKey, autoRefresh, client.getServers().getMaps());
 	}
 
 	

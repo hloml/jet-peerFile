@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import configuration.Server;
-import monitoring.JsonMonitoring;
 
 /**
  * Implementace monitorovacích služeb.
@@ -20,24 +19,32 @@ import monitoring.JsonMonitoring;
 public class MonitoringServiceImp implements MonitoringService {
 
 	@Override
-	public String monitor(HttpSession session, Model model, String serverKey, Map<Object, Server> servers) {
+	public String monitor(HttpSession session, Model model, String serverKey, String autoRefresh, Map<Object, Server> servers) {
 		ArrayList<Server> serversArray = new ArrayList<Server>(servers.values());
-		if(!model.containsAttribute("serversList")){
-			model.addAttribute("serversList", serversArray);
-			model.addAttribute("chosenServer", session.getAttribute("server"));		// chosen server from user
-		}
+		model.addAttribute("serversList", serversArray);
 		if(serverKey != null){
-			if(servers.containsKey(serverKey)){
+			if(servers.containsKey(serverKey)) {
 				Server s = (Server) servers.get(serverKey);
-//				JsonMonitoring jsm = new JsonMonitoring(s.getAddress(), s.getPort());
-//				model.addAttribute("serverMonitor", jsm);
 				model.addAttribute("monitoredServer", s);
 			} else {
-//				model.addAttribute("serverMonitor", null);
 				model.addAttribute("monitoredServer", null);
 			}
 		}
+		model.addAttribute("autoRefreshTimer", tryParseInt(autoRefresh));
+		
 		return "monitoring";
 	}
 	
+	private int tryParseInt(String s) {
+        int retValue = 0;
+        if(s == null) {
+            return retValue;
+        }
+	    try {
+	        retValue = Integer.parseInt(s);
+	    } catch (NumberFormatException e) {
+	        // return 0;
+	    }
+	    return retValue;
+	}
 }

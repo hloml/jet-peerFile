@@ -23,5 +23,5 @@ public interface MonitoringService {
 	 * @param servers Mapa serverů.
 	 * @return Http odpověď.
 	 */
-	public String monitor(HttpSession session, Model model, String serverKey, Map<Object, Server> servers);
+	public String monitor(HttpSession session, Model model, String serverKey, String autoRefresh, Map<Object, Server> servers);
 }

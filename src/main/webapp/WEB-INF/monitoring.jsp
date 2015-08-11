@@ -32,7 +32,7 @@
     <link href="res/monitoring.css" rel="stylesheet">
     <!-- Initialization -->
     <script type="text/javascript" class="init">
-    // tooltip
+    // tooltip initialization
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
@@ -41,17 +41,42 @@
       var anchor = window.location.hash;
       $(anchor).addClass("in");
     });
-    // reload page 
-    function reloadPage(hash) {
+    // reload page
+    var toId;
+    $(document).ready(function () { // init autoRefresh
+      var autoRefreshTimer = ${autoRefreshTimer};
       var urlString = window.location.href;
-      var url = urlString.split("#")[0];
+      var hash = urlString.split("#")[1];
+      $('.setRefreshTimer').hide(); // comment this line to show autorefresh
+      $('.stopRefreshTimer').hide();
+      autoRefresh(hash, autoRefreshTimer);
+    })
+    function reloadPage(hash) { // reload once
       window.location.href = "#" + hash;
       location.reload();
     }
-    function autoRefresh(hash) {
-        setTimeout(function(){
-        	reloadPage(hash);
-        }, 2000);
+    function autoRefresh(hash, timer) { // set autoRefresh on hash with timer
+      if (timer > 0) {
+        if (window.location.href.indexOf("refresh") < 0) {
+          var urlString = window.location.href;
+          var url = urlString.split("#")[0];
+          if (url.indexOf("?") < 0) {
+          	window.location.href = "?refresh=" + timer;
+          } else {
+          	window.location.href = url + "&refresh=" + timer + "#" + hash;
+          }
+        }
+        toId = setTimeout(function(){
+          reloadPage(hash);
+        }, (timer*1000));
+        $('.setRefreshTimer').hide();
+        $('.stopRefreshTimer').show();
+      }
+    }
+    function stopAutoRefresh() { // stop autoRefresh
+      clearTimeout(toId);
+      $('.setRefreshTimer').show();
+      $('.stopRefreshTimer').hide();
     }
     </script>
     <title>PeerFile - Monitoring
@@ -122,7 +147,7 @@
             </td>
             
       		<c:choose>
-      		  <c:when test="${server.monitoring().getInstance_id() != null}">
+      		  <c:when test="${server.monitoring().isMonitoringAvailable()}">
       		  
       		<td>
       		${server.monitoring().getPf_version()}
@@ -190,75 +215,40 @@
       </table>
 
 
-            <div class="row">
-              <div class="col-md-6">
-                <button type="button" class="btn btn-default"
-                  onclick="reloadPage('collapseInstances')"
-                  data-toggle="tooltip" data-placement="top"
-                  title="Refresh">
-                  <span class="glyphicon glyphicon-refresh"
-                    aria-hidden="true"></span>
-                </button>
-                <button type="button" class="btn btn-default"
-                  onclick="autoRefresh('collapseInstances')"
+      <hr>
+      <button type="button" class="btn btn-default"
+        onclick="reloadPage('collapseInstances')"
+        data-toggle="tooltip" data-placement="top"
+        title="Refresh">
+        <span class="glyphicon glyphicon-refresh"
+          aria-hidden="true"></span>
+      </button>
+                
+                <button type="button" class="btn btn-default setRefreshTimer"
+                  onclick="autoRefresh('collapseInstances', 2)"
                   data-toggle="tooltip" data-placement="top"
                   title="Auto Refresh">
-                  <span class="glyphicon glyphicon-warning-sign"
-                    aria-hidden="true"></span> Under construction
+                  <span class="glyphicon glyphicon-play"
+                    aria-hidden="true"></span> Set Auto Refresh
                 </button>
-              </div>
+                
+                <button type="button" class="btn btn-default stopRefreshTimer"
+                  onclick="stopAutoRefresh()"
+                  data-toggle="tooltip" data-placement="top"
+                  title="Stop Auto Refresh">
+                  <span class="glyphicon glyphicon-pause"
+                    aria-hidden="true"></span> Stop Auto Refresh
+                </button>
+                
 
-              <div class="col-md-6 row">
-                <div class="col-md-3">
-                  <div class="progress progress-small"
-                    style="width: 100px">
-                    <div class="progress-bar progress-bar-custom-normal"
-                      role="progressbar" style="width: 100%">
-                      normal &lt; 80%</div>
-                  </div>
-                </div>
-
-                <div class="col-md-3">
-                  <div class="progress progress-small"
-                    style="width: 100px">
-                    <div
-                      class="progress-bar progress-bar-custom-warning"
-                      role="progressbar" style="width: 100%">
-                      warning &lt; 90%</div>
-                  </div>
-                </div>
-
-                <div class="col-md-3">
-                  <div class="progress progress-small"
-                    style="width: 100px">
-                    <div class="progress-bar progress-bar-custom-danger"
-                      role="progressbar" style="width: 100%">
-                      danger &lt; 95%</div>
-                  </div>
-                </div>
-
-                <div class="col-md-3">
-                  <div class="progress progress-small"
-                    style="width: 100px">
-                    <div
-                      class="progress-bar progress-bar-custom-critical"
-                      role="progressbar" style="width: 100%">
-                      critical &gt; 95%</div>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
-
-          </div>
+      </div>
     </div>
   </div>
 
 
 <c:if test="${monitoredServer != null}">
 <c:choose>
-<c:when test="${monitoredServer.monitoring().getInstance_id() != null}">
+<c:when test="${monitoredServer.monitoring().isMonitoringAvailable()}">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingMonitor">
       <h4 class="panel-title">
@@ -449,13 +439,14 @@
           </div>
 		</c:forEach>
 		
-          <button type="button" class="btn btn-default" onclick="reloadPage('collapseMonitor')" data-toggle="tooltip" data-placement="top" title="Refresh">
-            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-          </button>
           
 	    </div>
 	    
 	  </div>
+          <hr>
+          <button type="button" class="btn btn-default" onclick="reloadPage('collapseMonitor')" data-toggle="tooltip" data-placement="top" title="Refresh">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          </button>
 	  
       </div>
     </div>
@@ -522,6 +513,11 @@
 	    </c:otherwise>
 	  </c:choose>
 	  
+        <hr>
+        <button type="button" class="btn btn-default" onclick="reloadPage('collapseSessions')" data-toggle="tooltip" data-placement="top" title="Refresh">
+          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+        </button>
+          
 	  </div>
     </div>
   </div>
@@ -539,6 +535,12 @@
 	  
 	  	<pre>${monitoredServer.monitoring().getPassenger_info()}</pre>
 	  	
+      
+        <hr>
+        <button type="button" class="btn btn-default" onclick="reloadPage('collapsePassenger')" data-toggle="tooltip" data-placement="top" title="Refresh">
+          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+        </button>
+          
 	  </div>
     </div>
   </div>
